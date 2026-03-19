@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Payment Plan Calculator · Billie</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --black:       #000000;
+    --off-black:   #0D0D0D;
+    --ink:         #1A1A1A;
+    --ink-soft:    #2E2E2E;
+    --grey-6:      #4A4A4A;
+    --grey-5:      #6E6E6E;
+    --grey-4:      #9A9A9A;
+    --grey-3:      #CECECE;
+    --grey-2:      #E8E8E8;
+    --grey-1:      #F4F4F2;
+    --white:       #FFFFFF;
+
+    --blue:        #4060D4;
+    --blue-soft:   #EEF1FC;
+    --amber:       #E08030;
+    --amber-soft:  #FDF3E8;
+    --violet:      #7B6FCF;
+    --violet-soft: #F2F0FC;
+
+    --warn:        #C96000;
+    --warn-bg:     #FFF4E6;
+    --danger:      #C02020;
+    --danger-bg:   #FFF0F0;
+    --ok:          #167A40;
+    --ok-bg:       #EDFAF3;
+
+    --font: 'Inter', sans-serif;
+    --r:    10px;
+    --r-sm: 6px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--grey-1);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── TOPBAR ── */
+  .topbar {
+    background: var(--black);
+    height: 52px;
+    display: flex; align-items: center;
+    padding: 0 32px;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-title { font-size: 14px; font-weight: 600; color: var(--white); letter-spacing: -0.2px; }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .topbar-meta  { font-size: 11px; font-weight: 500; color: var(--grey-4); text-transform: uppercase; letter-spacing: 0.8px; }
+  .topbar-divider { width: 1px; height: 16px; background: #333; }
+
+  /* ─── HERO ── */
+  .hero {
+    background: var(--black);
+    position: relative; overflow: hidden;
+    padding: 40px 40px 36px;
+  }
+  .hero-gradient { display: none; }
+  .hero-content { position: relative; z-index: 1; }
+  .hero h1 { font-size: 30px; font-weight: 800; color: var(--white); letter-spacing: -0.8px; line-height: 1.15; margin-bottom: 6px; }
+  .hero p   { font-size: 14px; color: rgba(255,255,255,0.45); max-width: 460px; }
+
+  /* ─── MAIN ── */
+  .main { max-width: 1080px; margin: 0 auto; padding: 28px 32px 64px; }
+
+  /* ─── INPUT PANEL ── */
+  .input-panel {
+    background: var(--white);
+    border: 1px solid var(--grey-2);
+    border-radius: var(--r);
+    padding: 24px 28px 22px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1fr 200px auto;
+    gap: 18px; align-items: end;
+  }
+  .field-label {
+    font-size: 11px; font-weight: 700; color: var(--grey-5);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin-bottom: 8px; display: block;
+  }
+  .amt-wrap { position: relative; }
+  .amt-sym {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 20px; font-weight: 600; color: var(--grey-3); pointer-events: none;
+  }
+  .amt-input {
+    width: 100%; padding: 13px 16px 13px 30px;
+    font-size: 24px; font-weight: 700; font-family: var(--font);
+    color: var(--black); background: var(--grey-1);
+    border: 1.5px solid var(--grey-2); border-radius: var(--r-sm);
+    outline: none; letter-spacing: -0.5px;
+    transition: border-color .15s, background .15s;
+  }
+  .amt-input:focus { border-color: var(--black); background: var(--white); }
+  .amt-input::placeholder { color: var(--grey-3); font-weight: 400; font-size: 20px; }
+
+  .seg {
+    display: flex; background: var(--grey-1);
+    border: 1.5px solid var(--grey-2); border-radius: var(--r-sm);
+    padding: 3px; gap: 3px;
+  }
+  .seg button {
+    flex: 1; padding: 10px 12px;
+    font-size: 13px; font-weight: 600; font-family: var(--font);
+    border: none; border-radius: 5px; cursor: pointer;
+    background: transparent; color: var(--grey-5);
+    transition: background .15s, color .15s, box-shadow .15s; white-space: nowrap;
+  }
+  .seg button.on { background: var(--black); color: var(--white); box-shadow: 0 1px 4px rgba(0,0,0,.18); }
+
+  .generate-btn {
+    padding: 13px 26px; background: var(--black); color: var(--white);
+    border: none; border-radius: var(--r-sm);
+    font-size: 14px; font-weight: 700; font-family: var(--font);
+    cursor: pointer; white-space: nowrap; letter-spacing: -0.1px;
+    transition: background .15s, transform .1s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .generate-btn:hover { background: var(--ink-soft); transform: translateY(-1px); }
+  .generate-btn:active { transform: none; }
+  .generate-btn svg { transition: transform .15s; }
+  .generate-btn:hover svg { transform: translateX(3px); }
+
+  /* ─── RULES PANEL ── */
+  .rules-panel {
+    background: var(--white);
+    border: 1px solid var(--grey-2);
+    border-radius: var(--r);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .rules-panel-header {
+    background: var(--off-black);
+    padding: 12px 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .rules-panel-header span {
+    font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5);
+    text-transform: uppercase; letter-spacing: 0.9px;
+  }
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .rule-row {
+    display: flex; align-items: flex-start; gap: 13px;
+    padding: 16px 20px;
+    border-right: 1px solid var(--grey-2);
+    border-bottom: 1px solid var(--grey-2);
+    transition: background .12s;
+  }
+  .rule-row:hover { background: var(--grey-1); }
+  .rule-row:nth-child(3n)      { border-right: none; }
+  .rule-row:nth-last-child(-n+3) { border-bottom: none; }
+
+  .rule-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0; margin-top: 1px;
+  }
+  .rule-icon.neutral { background: var(--grey-1); }
+  .rule-icon.warn    { background: var(--danger-bg); }
+
+  .rule-text .r-title {
+    font-size: 13px; font-weight: 700; color: var(--ink);
+    line-height: 1.3; margin-bottom: 3px;
+  }
+  .rule-text .r-title .hi { color: var(--black); }
+  .rule-text .r-sub { font-size: 11.5px; color: var(--grey-5); line-height: 1.45; }
+  .rule-row.is-warn .r-title { color: var(--danger); }
+  .rule-row.is-warn .r-sub   { color: #C06060; }
+
+  /* ─── ALERT ── */
+  .alert {
+    display: none;
+    background: var(--danger-bg); border: 1px solid #F5C5C5;
+    border-left: 4px solid var(--danger); border-radius: var(--r-sm);
+    padding: 13px 16px; margin-bottom: 20px;
+    font-size: 13px; color: var(--danger); font-weight: 600;
+  }
+  .alert.show { display: block; }
+
+  /* ─── STAT CARDS ── */
+  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--white); border: 1px solid var(--grey-2);
+    border-radius: var(--r); padding: 18px 20px 16px;
+  }
+  .stat-card .s-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--grey-4); margin-bottom: 8px; }
+  .stat-card .s-val   { font-size: 22px; font-weight: 800; color: var(--black); letter-spacing: -0.6px; line-height: 1; }
+  .stat-card .s-val.warn-c   { color: var(--warn); }
+  .stat-card .s-val.blue-c   { color: var(--blue); }
+  .stat-card .s-val.violet-c { color: var(--violet); }
+  .stat-card .s-sub  { font-size: 11px; color: var(--grey-4); margin-top: 5px; }
+  .stat-card.accent-card { background: var(--black); border-color: var(--black); }
+  .stat-card.accent-card .s-label { color: rgba(255,255,255,0.4); }
+  .stat-card.accent-card .s-val   { color: var(--white); }
+  .stat-card.accent-card .s-sub   { color: rgba(255,255,255,0.3); }
+
+  /* ─── SECTION HEAD ── */
+  .sec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .sec-head h2 { font-size: 12px; font-weight: 700; color: var(--black); text-transform: uppercase; letter-spacing: 0.7px; }
+  .sec-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 20px; background: var(--blue-soft); color: var(--blue); border: 1px solid #C5D0F5; }
+
+  /* ─── TABLE ── */
+  .tbl-wrap { background: var(--white); border: 1px solid var(--grey-2); border-radius: var(--r); overflow: hidden; margin-bottom: 28px; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: var(--off-black); color: rgba(255,255,255,0.55);
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px;
+    padding: 11px 16px; text-align: left; white-space: nowrap;
+  }
+  thead th.c { text-align: center; }
+  tbody tr { border-bottom: 1px solid var(--grey-1); transition: background .1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--grey-1); }
+  tbody tr.exc-row { background: #FDFAF5; }
+  tbody tr.exc-row:hover { background: #F8F3E8; }
+  td { padding: 13px 16px; font-size: 13px; color: var(--ink); vertical-align: middle; }
+  td.c { text-align: center; }
+
+  .d-pill { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .d-pill.std { background: var(--grey-1); color: var(--grey-6); border: 1px solid var(--grey-2); }
+  .d-pill.exc { background: var(--amber-soft); color: var(--amber); border: 1px solid #F5D5B0; }
+  .d-pill-note { font-size: 10px; color: var(--grey-4); display: block; margin-top: 3px; }
+
+  .ap { display: inline-block; font-size: 13px; font-weight: 700; padding: 5px 10px; border-radius: var(--r-sm); font-variant-numeric: tabular-nums; }
+  .ap.min  { background: var(--warn-bg);    color: var(--warn); }
+  .ap.tgt  { background: var(--blue-soft);  color: var(--blue); }
+  .ap.str  { background: var(--violet-soft);color: var(--violet); }
+  .ap.rem  { background: var(--grey-1);     color: var(--ink); }
+  .ap-sub  { font-size: 10px; color: var(--grey-4); display: block; margin-top: 3px; }
+
+  .apb { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .apb.ok  { background: var(--ok-bg);     color: var(--ok); }
+  .apb.req { background: var(--danger-bg); color: var(--danger); }
+
+  /* ─── LEGEND ── */
+  .legend { display: flex; flex-wrap: wrap; gap: 10px 22px; padding: 13px 18px; background: var(--grey-1); border-top: 1px solid var(--grey-2); }
+  .leg-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--grey-5); }
+  .leg-sw   { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.08); }
+
+  /* ─── EMPTY ── */
+  .empty { background: var(--white); border: 1px solid var(--grey-2); border-radius: var(--r); padding: 60px 32px; text-align: center; }
+  .empty-icon { width: 48px; height: 48px; background: var(--grey-1); border: 1px solid var(--grey-2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 14px; }
+  .empty h3 { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
+  .empty p  { font-size: 13px; color: var(--grey-5); max-width: 360px; margin: 0 auto; }
+
+  .footer-note { font-size: 11px; color: var(--grey-4); text-align: center; margin-top: 14px; line-height: 1.6; }
+
+  @media (max-width: 760px) {
+    .input-panel { grid-template-columns: 1fr; }
+    .stats        { grid-template-columns: 1fr 1fr; }
+    .rules-grid   { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="topbar-title">Collections · Payment Plan Calculator</span>
+  <div class="topbar-right">
+    <span class="topbar-meta">Internal Use Only</span>
+    <div class="topbar-divider"></div>
+    <span class="topbar-meta">billie.io</span>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-gradient"></div>
+  <div class="hero-content">
+    <h1>Payment Plan Calculator</h1>
+    <p>Enter an invoice total to instantly generate SOP-compliant instalment options for your buyer.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="input-panel">
+    <div>
+      <label class="field-label">Total invoice amount (incl. all late fees)</label>
+      <div class="amt-wrap">
+        <span class="amt-sym">€</span>
+        <input class="amt-input" type="number" id="amt" placeholder="0.00" min="0.01" step="0.01"/>
+      </div>
+    </div>
+    <div>
+      <label class="field-label">Payment frequency</label>
+      <div class="seg">
+        <button id="btnM" class="on" onclick="setFreq('m')">Monthly</button>
+        <button id="btnW"            onclick="setFreq('w')">Weekly</button>
+      </div>
+    </div>
+    <div>
+      <label class="field-label">&nbsp;</label>
+      <button class="generate-btn" onclick="run()">
+        Generate
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2 7h10M8 3l4 4-4 4" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- RULES PANEL -->
+  <div class="rules-panel">
+    <div class="rules-panel-header">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <circle cx="6" cy="6" r="5" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+        <path d="M6 3.5v3M6 8v.5" stroke="rgba(255,255,255,0.4)" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <span>SOP Rules — read before creating any plan</span>
+    </div>
+    <div class="rules-grid">
+
+      <div class="rule-row">
+        <div class="rule-icon neutral">📄</div>
+        <div class="rule-text">
+          <div class="r-title">Only <span class="hi">late invoices</span> are eligible</div>
+          <div class="r-sub">Current or future-dated invoices cannot be included</div>
+        </div>
+      </div>
+
+      <div class="rule-row">
+        <div class="rule-icon neutral">📅</div>
+        <div class="rule-text">
+          <div class="r-title">Standard max <span class="hi">3 months</span></div>
+          <div class="r-sub">Exception up to 6 months — must be justified</div>
+        </div>
+      </div>
+
+      <div class="rule-row">
+        <div class="rule-icon neutral">👥</div>
+        <div class="rule-text">
+          <div class="r-title">&gt;6 months → <span class="hi">Collection Team approval</span></div>
+          <div class="r-sub">Formal sign-off required before offering</div>
+        </div>
+      </div>
+
+      <div class="rule-row">
+        <div class="rule-icon neutral">💶</div>
+        <div class="rule-text">
+          <div class="r-title">&gt;€5,000 → <span class="hi">Collection Team approval</span></div>
+          <div class="r-sub">Get sign-off before confirming any plan</div>
+        </div>
+      </div>
+
+      <div class="rule-row">
+        <div class="rule-icon neutral">⏱</div>
+        <div class="rule-text">
+          <div class="r-title">1st payment due <span class="hi">within 7 days</span></div>
+          <div class="r-sub">Demonstrates serious commitment from the buyer</div>
+        </div>
+      </div>
+
+      <div class="rule-row is-warn">
+        <div class="rule-icon warn">🚫</div>
+        <div class="rule-text">
+          <div class="r-title">Never waive late fees</div>
+          <div class="r-sub">Always add all late fees to the total before calculating</div>
+        </div>
+      </div>
+
+      <div class="rule-row is-warn">
+        <div class="rule-icon warn">🏦</div>
+        <div class="rule-text">
+          <div class="r-title">No DCA invoices</div>
+          <div class="r-sub">Invoices already sent to a debt collector are excluded</div>
+        </div>
+      </div>
+
+      <div class="rule-row is-warn">
+        <div class="rule-icon warn">⛔</div>
+        <div class="rule-text">
+          <div class="r-title">Previous default → not eligible</div>
+          <div class="r-sub">Buyer broke a prior plan — no new plan can be offered</div>
+        </div>
+      </div>
+
+      <div class="rule-row">
+        <div class="rule-icon neutral">📧</div>
+        <div class="rule-text">
+          <div class="r-title">Confirm every plan <span class="hi">by email</span></div>
+          <div class="r-sub">Invoice list, total, schedule, due dates & payment ref</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="alert" id="alert"></div>
+
+  <div class="stats" id="stats" style="display:none">
+    <div class="stat-card accent-card">
+      <div class="s-label">Invoice Total</div>
+      <div class="s-val" id="sTotal">—</div>
+      <div class="s-sub">incl. all late fees</div>
+    </div>
+    <div class="stat-card">
+      <div class="s-label">Min 1st Payment · 15%</div>
+      <div class="s-val warn-c" id="sMin">—</div>
+      <div class="s-sub">Escalate first — hardship only</div>
+    </div>
+    <div class="stat-card">
+      <div class="s-label">Target 1st Payment · 20%</div>
+      <div class="s-val blue-c" id="sTgt">—</div>
+      <div class="s-sub">Standard starting point</div>
+    </div>
+    <div class="stat-card">
+      <div class="s-label">Strong 1st Payment · 33%</div>
+      <div class="s-val violet-c" id="sStr">—</div>
+      <div class="s-sub">Use when buyer can commit more</div>
+    </div>
+  </div>
+
+  <div id="out">
+    <div class="empty">
+      <div class="empty-icon">📋</div>
+      <h3>No plan generated yet</h3>
+      <p>Enter the invoice total above (including all late fees) and click <strong>Generate</strong> to see all valid instalment options.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let freq = 'm';
+  const E   = id => document.getElementById(id);
+  const fmt = n  => '€' + n.toLocaleString('en-IE', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  function setFreq(f) {
+    freq = f;
+    E('btnM').classList.toggle('on', f==='m');
+    E('btnW').classList.toggle('on', f==='w');
+  }
+
+  E('amt').addEventListener('keydown', e => { if (e.key==='Enter') run(); });
+
+  function run() {
+    const v = parseFloat(E('amt').value);
+    if (!v || v<=0) { E('amt').focus(); return; }
+    const over5k = v > 5000;
+
+    const al = E('alert');
+    if (over5k) {
+      al.className = 'alert show';
+      al.innerHTML = '⚠ <strong>Collection Team approval required</strong> — This plan total exceeds €5,000. Get formal sign-off before confirming anything with the buyer.';
+    } else { al.className = 'alert'; }
+
+    E('stats').style.display = 'grid';
+    E('sTotal').textContent = fmt(v);
+    E('sMin').textContent   = fmt(v * 0.15);
+    E('sTgt').textContent   = fmt(v * 0.20);
+    E('sStr').textContent   = fmt(v * 0.33);
+
+    E('out').innerHTML = renderTable(freq==='m' ? monthlyPlans(v,over5k) : weeklyPlans(v,over5k), freq);
+  }
+
+  function monthlyPlans(v, over5k) {
+    return [
+      {n:1, label:'1 month',  exc:false},
+      {n:2, label:'2 months', exc:false},
+      {n:3, label:'3 months', exc:false},
+      {n:6, label:'6 months', exc:true },
+    ].map(o => ({
+      durLabel:o.label, exc:o.exc, n:o.n, unit:'monthly',
+      needsApproval: over5k||o.exc,
+      approvalNote: over5k&&o.exc ? 'Collection Team (>€5k + exception)'
+                  : over5k        ? 'Collection Team (>€5,000)'
+                  : o.exc         ? 'Collection Team (exception >3 mo)' : null,
+      amount: v
+    }));
+  }
+
+  function weeklyPlans(v, over5k) {
+    return [
+      {n:4,  label:'4 weeks',  sub:'~1 month',  exc:false},
+      {n:8,  label:'8 weeks',  sub:'~2 months', exc:false},
+      {n:13, label:'13 weeks', sub:'~3 months', exc:false},
+      {n:26, label:'26 weeks', sub:'~6 months', exc:true },
+    ].map(o => ({
+      durLabel:o.label, durSub:o.sub, exc:o.exc, n:o.n, unit:'weekly',
+      needsApproval: over5k||o.exc,
+      approvalNote: over5k&&o.exc ? 'Collection Team (>€5k + exception)'
+                  : over5k        ? 'Collection Team (>€5,000)'
+                  : o.exc         ? 'Collection Team (exception >3 mo)' : null,
+      amount: v
+    }));
+  }
+
+  function renderTable(plans, freq) {
+    const title   = freq==='m' ? 'Monthly Payment Plans' : 'Weekly Payment Plans';
+    const ukBadge = freq==='w' ? '<span class="sec-badge">Prioritise for UK buyers</span>' : '';
+
+    const rows = plans.map(p => {
+      const min15=p.amount*0.15, tgt20=p.amount*0.20, str33=p.amount*0.33;
+      const remN=Math.max(p.n-1,1), remEa=(p.amount-tgt20)/remN;
+
+      const durSub  = p.durSub ? `<span class="d-pill-note">${p.durSub}</span>` : '';
+      const excNote = p.exc    ? `<span class="d-pill-note" style="color:var(--amber)">Justify before offering</span>` : '';
+
+      const remCell = p.n===1
+        ? `<span class="ap rem">Full amount — single payment</span>`
+        : `<span class="ap rem">${fmt(remEa)}</span><span class="ap-sub">× ${remN} remaining ${p.unit} payments</span>`;
+
+      const apBadge = p.needsApproval
+        ? `<span class="apb req"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3.5v3M6 8v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>${p.approvalNote}</span>`
+        : `<span class="apb ok"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>None required</span>`;
+
+      return `<tr class="${p.exc?'exc-row':''}">
+        <td><span class="d-pill ${p.exc?'exc':'std'}">${p.durLabel}</span>${durSub}${excNote}</td>
+        <td class="c" style="font-weight:600;font-variant-numeric:tabular-nums">${p.n}</td>
+        <td><span class="ap min">${fmt(min15)}</span><span class="ap-sub" style="color:var(--warn)">Escalate first!</span></td>
+        <td><span class="ap tgt">${fmt(tgt20)}</span><span class="ap-sub">Standard start</span></td>
+        <td><span class="ap str">${fmt(str33)}</span></td>
+        <td>${remCell}</td>
+        <td>${apBadge}</td>
+      </tr>`;
+    }).join('');
+
+    return `
+      <div class="sec-head"><h2>${title}</h2>${ukBadge}</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>Duration</th><th class="c">Payments</th>
+            <th>Min 1st &nbsp;·&nbsp; 15%</th>
+            <th>Target 1st &nbsp;·&nbsp; 20%</th>
+            <th>Strong 1st &nbsp;·&nbsp; 33%</th>
+            <th>Remaining per Payment</th>
+            <th>Approval</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="legend">
+          <div class="leg-item"><div class="leg-sw" style="background:var(--warn-bg);border-color:#F5D0A0"></div>Min 15% — hardship only, escalate first</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--blue-soft);border-color:#C5D0F5"></div>Target 20% — standard starting point</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--violet-soft);border-color:#C5C0F0"></div>Strong 33% — buyer can commit more</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--amber-soft);border-color:#F5D5B0"></div>Amber row = exception plan, justify before offering</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--danger-bg);border-color:#F5C5C5"></div>Red badge = Collection Team sign-off required</div>
+        </div>
+      </div>
+      <p class="footer-note">Remaining per payment calculated after the target <strong>20% first payment</strong> · Include all late fees · First payment within <strong>7 days</strong></p>`;
+  }
+</script>
+</body>
+</html>
