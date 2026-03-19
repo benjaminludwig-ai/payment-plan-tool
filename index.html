@@ -44,16 +44,12 @@
   body { font-family: var(--font); background: var(--grey-1); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
   /* ── TOPBAR ── */
-  .topbar { background: var(--black); height: 52px; display: flex; align-items: center; padding: 0 32px; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-  .topbar-title { font-size: 14px; font-weight: 600; color: var(--white); letter-spacing: -0.2px; }
-  .topbar-right { display: flex; align-items: center; gap: 16px; }
-  .topbar-meta  { font-size: 11px; font-weight: 500; color: var(--grey-4); text-transform: uppercase; letter-spacing: 0.8px; }
-  .topbar-divider { width: 1px; height: 16px; background: #333; }
+  .topbar { background: var(--black); height: 52px; display: flex; align-items: center; padding: 0 32px; position: sticky; top: 0; z-index: 100; }
 
   /* ── HERO ── */
-  .hero { background: var(--black); padding: 40px 40px 36px; }
-  .hero h1 { font-size: 30px; font-weight: 800; color: var(--white); letter-spacing: -0.8px; line-height: 1.15; margin-bottom: 6px; }
-  .hero p  { font-size: 14px; color: rgba(255,255,255,0.45); max-width: 460px; }
+  .hero { background: var(--grey-1); padding: 36px 40px 4px; }
+  .hero h1 { font-size: 26px; font-weight: 700; color: var(--black); letter-spacing: -0.6px; line-height: 1.15; margin-bottom: 5px; }
+  .hero p  { font-size: 14px; color: var(--grey-5); max-width: 520px; }
 
   /* ── MAIN ── */
   .main { max-width: 1120px; margin: 0 auto; padding: 28px 32px 64px; }
@@ -64,7 +60,7 @@
     padding: 24px 28px 22px; margin-bottom: 20px;
     display: grid; grid-template-columns: 1fr 160px 160px auto; gap: 16px; align-items: end;
   }
-  .field-label { font-size: 11px; font-weight: 700; color: var(--grey-5); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: block; }
+  .field-label { font-size: 11px; font-weight: 700; color: var(--grey-5); letter-spacing: 0.1px; margin-bottom: 8px; display: block; }
 
   /* Currency + amount row */
   .amt-row { display: flex; gap: 0; }
@@ -114,24 +110,55 @@
 
   .input-error { font-size: 11px; color: var(--danger); font-weight: 600; margin-top: 5px; display: none; }
   .input-error.show { display: block; }
+  .field-hint { font-size: 11px; color: var(--grey-4); margin-top: 5px; }
 
-  /* ── RULES PANEL ── */
-  .rules-panel { background: var(--white); border: 1px solid var(--grey-2); border-radius: var(--r); overflow: hidden; margin-bottom: 20px; }
-  .rules-panel-header { background: var(--off-black); padding: 12px 20px; display: flex; align-items: center; gap: 8px; }
-  .rules-panel-header span { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.9px; }
-  .rules-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
-  .rule-row { display: flex; align-items: flex-start; gap: 13px; padding: 16px 20px; border-right: 1px solid var(--grey-2); border-bottom: 1px solid var(--grey-2); transition: background .12s; }
-  .rule-row:hover { background: var(--grey-1); }
-  .rule-row:nth-child(3n)        { border-right: none; }
-  .rule-row:nth-last-child(-n+3) { border-bottom: none; }
-  .rule-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  /* ── RULES PANEL — Apple style ── */
+  .rules-panel {
+    margin-bottom: 20px;
+  }
+  .rules-section-label {
+    font-size: 13px; font-weight: 700; color: var(--ink);
+    margin-bottom: 14px; text-align: center; letter-spacing: 0.1px;
+  }
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .rule-card {
+    background: var(--white);
+    border: 1px solid var(--grey-2);
+    border-radius: 14px;
+    padding: 18px 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: box-shadow .15s;
+  }
+  .rule-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+  .rule-card.is-warn {
+    background: #FFFAFA;
+    border-color: #F5DADA;
+  }
+  .rule-card-top {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .rule-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; flex-shrink: 0;
+  }
   .rule-icon.neutral { background: var(--grey-1); }
-  .rule-icon.warn    { background: var(--danger-bg); }
-  .rule-text .r-title { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.3; margin-bottom: 3px; }
-  .rule-text .r-title .hi { color: var(--black); }
-  .rule-text .r-sub { font-size: 11.5px; color: var(--grey-5); line-height: 1.45; }
-  .rule-row.is-warn .r-title { color: var(--danger); }
-  .rule-row.is-warn .r-sub   { color: #C06060; }
+  .rule-icon.warn    { background: #FDECEA; }
+  .rule-card-title {
+    font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.25;
+  }
+  .rule-card.is-warn .rule-card-title { color: var(--danger); }
+  .rule-card-body {
+    font-size: 12px; color: var(--grey-5); line-height: 1.5;
+    padding-left: 46px;
+    margin-top: -4px;
+  }
 
   /* ── ALERT ── */
   .alert { display: none; background: var(--danger-bg); border: 1px solid #F5C5C5; border-left: 4px solid var(--danger); border-radius: var(--r-sm); padding: 13px 16px; margin-bottom: 20px; font-size: 13px; color: var(--danger); font-weight: 600; }
@@ -140,7 +167,7 @@
   /* ── STAT CARDS ── */
   .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 24px; }
   .stat-card { background: var(--white); border: 1px solid var(--grey-2); border-radius: var(--r); padding: 18px 20px 16px; }
-  .stat-card .s-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--grey-4); margin-bottom: 8px; }
+  .stat-card .s-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1px; color: var(--grey-4); margin-bottom: 8px; }
   .stat-card .s-val   { font-size: 22px; font-weight: 800; letter-spacing: -0.6px; line-height: 1; color: var(--black); }
   .stat-card .s-val.green-c  { color: var(--green); }
   .stat-card .s-val.blue-c   { color: var(--blue); }
@@ -153,13 +180,13 @@
 
   /* ── SECTION HEAD ── */
   .sec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .sec-head h2 { font-size: 12px; font-weight: 700; color: var(--black); text-transform: uppercase; letter-spacing: 0.7px; }
-  .sec-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 8px; border-radius: 20px; background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-mid); }
+  .sec-head h2 { font-size: 12px; font-weight: 700; color: var(--black); letter-spacing: 0.1px; }
+  .sec-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.1px; padding: 3px 8px; border-radius: 20px; background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-mid); }
 
   /* ── TABLE ── */
   .tbl-wrap { background: var(--white); border: 1px solid var(--grey-2); border-radius: var(--r); overflow: hidden; margin-bottom: 28px; }
   table { width: 100%; border-collapse: collapse; }
-  thead th { background: var(--off-black); color: rgba(255,255,255,0.55); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; padding: 11px 16px; text-align: left; white-space: nowrap; }
+  thead th { background: var(--off-black); color: rgba(255,255,255,0.55); font-size: 11px; font-weight: 600; letter-spacing: 0.1px; padding: 11px 16px; text-align: left; white-space: nowrap; }
   thead th.c { text-align: center; }
   tbody tr { border-bottom: 1px solid var(--grey-1); transition: background .1s; }
   tbody tr:last-child { border-bottom: none; }
@@ -244,14 +271,7 @@
 </head>
 <body>
 
-<header class="topbar">
-  <span class="topbar-title">Collections · Payment Plan Calculator</span>
-  <div class="topbar-right">
-    <span class="topbar-meta">Internal Use Only</span>
-    <div class="topbar-divider"></div>
-    <span class="topbar-meta">billie.io</span>
-  </div>
-</header>
+<header class="topbar"></header>
 
 <div class="hero">
   <h1>Payment Plan Calculator</h1>
@@ -263,7 +283,7 @@
   <!-- INPUT -->
   <div class="input-panel">
     <div>
-      <label class="field-label">Invoice amount (incl. all late fees) — min 250</label>
+      <label class="field-label">Invoice amount</label>
       <div class="amt-row">
         <select class="currency-select" id="currency" onchange="updateSymbol()">
           <option value="EUR" data-sym="€" selected>EUR</option>
@@ -279,6 +299,7 @@
         </div>
       </div>
       <div class="input-error" id="amtErr"></div>
+      <div class="field-hint">* Incl. all late fees · minimum <span id="hintMin">€250</span></div>
     </div>
     <div>
       <label class="field-label">Frequency</label>
@@ -300,20 +321,81 @@
 
   <!-- RULES -->
   <div class="rules-panel">
-    <div class="rules-panel-header">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/><path d="M6 3.5v3M6 8v.5" stroke="rgba(255,255,255,0.4)" stroke-width="1.4" stroke-linecap="round"/></svg>
-      <span>SOP Rules — read before creating any plan</span>
-    </div>
+    <div class="rules-section-label">SOP Rules · read before creating any plan</div>
     <div class="rules-grid">
-      <div class="rule-row"><div class="rule-icon neutral">📄</div><div class="rule-text"><div class="r-title">Only <span class="hi">late invoices</span> are eligible</div><div class="r-sub">Current or future-dated invoices cannot be included</div></div></div>
-      <div class="rule-row"><div class="rule-icon neutral">📅</div><div class="rule-text"><div class="r-title">Standard max <span class="hi">3 months</span></div><div class="r-sub">Exception up to 6 months — must be justified</div></div></div>
-      <div class="rule-row"><div class="rule-icon neutral">👥</div><div class="rule-text"><div class="r-title">&gt;6 months → <span class="hi">Collection Team approval</span></div><div class="r-sub">Formal sign-off required before offering</div></div></div>
-      <div class="rule-row"><div class="rule-icon neutral">💶</div><div class="rule-text"><div class="r-title">&gt;€5,000 → <span class="hi">Collection Team approval</span></div><div class="r-sub">Get sign-off before confirming any plan</div></div></div>
-      <div class="rule-row"><div class="rule-icon neutral">⏱</div><div class="rule-text"><div class="r-title">1st payment due <span class="hi">within 7 days</span></div><div class="r-sub">Demonstrates serious commitment from the buyer</div></div></div>
-      <div class="rule-row is-warn"><div class="rule-icon warn">🚫</div><div class="rule-text"><div class="r-title">Never waive late fees</div><div class="r-sub">Always add all late fees to the total before calculating</div></div></div>
-      <div class="rule-row is-warn"><div class="rule-icon warn">🏦</div><div class="rule-text"><div class="r-title">No DCA invoices</div><div class="r-sub">Invoices already sent to a debt collector are excluded</div></div></div>
-      <div class="rule-row is-warn"><div class="rule-icon warn">⛔</div><div class="rule-text"><div class="r-title">Previous default → not eligible</div><div class="r-sub">Buyer broke a prior plan — no new plan can be offered</div></div></div>
-      <div class="rule-row"><div class="rule-icon neutral">📧</div><div class="rule-text"><div class="r-title">Confirm every plan <span class="hi">by email</span></div><div class="r-sub">Invoice list, total, schedule, due dates & payment ref</div></div></div>
+
+      <div class="rule-card">
+        <div class="rule-card-top">
+          <div class="rule-icon neutral">📄</div>
+          <div class="rule-card-title">Only late invoices are eligible</div>
+        </div>
+        <div class="rule-card-body">Current or future-dated invoices cannot be included in a payment plan.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-card-top">
+          <div class="rule-icon neutral">📅</div>
+          <div class="rule-card-title">Standard maximum is 3 months</div>
+        </div>
+        <div class="rule-card-body">Exception up to 6 months is possible but must be clearly justified.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-card-top">
+          <div class="rule-icon neutral">👥</div>
+          <div class="rule-card-title">Over 6 months requires Collection Team approval</div>
+        </div>
+        <div class="rule-card-body">Formal sign-off is required before offering any plan beyond 6 months.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-card-top">
+          <div class="rule-icon neutral">💶</div>
+          <div class="rule-card-title">Over €5,000 requires Collection Team approval</div>
+        </div>
+        <div class="rule-card-body">Get sign-off before confirming any plan with a total above this threshold.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-card-top">
+          <div class="rule-icon neutral">⏱</div>
+          <div class="rule-card-title">First payment is due within 7 days</div>
+        </div>
+        <div class="rule-card-body">This demonstrates the buyer's serious commitment to the payment plan.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-card-top">
+          <div class="rule-icon neutral">📧</div>
+          <div class="rule-card-title">Confirm every plan by email</div>
+        </div>
+        <div class="rule-card-body">Include invoice list, total amount, instalment schedule, due dates and payment reference.</div>
+      </div>
+
+      <div class="rule-card is-warn">
+        <div class="rule-card-top">
+          <div class="rule-icon warn">🚫</div>
+          <div class="rule-card-title">Never waive late fees</div>
+        </div>
+        <div class="rule-card-body">Always add all late fees to the total before calculating any instalment amounts.</div>
+      </div>
+
+      <div class="rule-card is-warn">
+        <div class="rule-card-top">
+          <div class="rule-icon warn">🏦</div>
+          <div class="rule-card-title">No DCA invoices</div>
+        </div>
+        <div class="rule-card-body">Invoices already sent to a debt collection agency are excluded from payment plans.</div>
+      </div>
+
+      <div class="rule-card is-warn">
+        <div class="rule-card-top">
+          <div class="rule-icon warn">⛔</div>
+          <div class="rule-card-title">Previous default means not eligible</div>
+        </div>
+        <div class="rule-card-body">If a buyer broke a prior payment plan, no new plan can be offered to them.</div>
+      </div>
+
     </div>
   </div>
 
@@ -339,7 +421,7 @@
     <div class="stat-card">
       <div class="s-label">Min 1st Payment · 15%</div>
       <div class="s-val orange-c" id="sMin">—</div>
-      <div class="s-sub">Escalate first — hardship only</div>
+      <div class="s-sub">Escalate first · hardship only</div>
     </div>
   </div>
 
@@ -381,6 +463,8 @@
     E('amtSym').textContent = c.sym;
     E('amtErr').className = 'input-error';
     E('amt').className = 'amt-input';
+    const minAmt = MIN_AMOUNTS[c.code] || 250;
+    E('hintMin').textContent = c.sym + minAmt.toLocaleString();
   }
 
   function setFreq(f) {
@@ -415,7 +499,7 @@
     const al = E('alert');
     if (over5k) {
       al.className = 'alert show';
-      al.innerHTML = `⚠ <strong>Collection Team approval required</strong> — This plan total exceeds ${cur.sym}${cur.threshold.toLocaleString()}. Get formal sign-off before confirming anything with the buyer.`;
+      al.innerHTML = `⚠ <strong>Collection Team approval required</strong> · This plan total exceeds ${cur.sym}${cur.threshold.toLocaleString()}. Get formal sign-off before confirming anything with the buyer.`;
     } else { al.className = 'alert'; }
 
     E('stats').style.display = 'grid';
@@ -439,9 +523,9 @@
     ].map(o => ({
       durLabel:o.label, exc:o.exc, n:o.n, unit:'monthly',
       needsApproval: over5k||o.exc,
-      approvalNote: over5k&&o.exc ? `Collection Team (>${cur.sym}${cur.threshold.toLocaleString()} + exception)`
-                  : over5k        ? `Collection Team (>${cur.sym}${cur.threshold.toLocaleString()})`
-                  : o.exc         ? 'Collection Team (exception >3 mo)' : null,
+      approvalNote: over5k&&o.exc ? `Collection Team (over ${cur.sym}${cur.threshold.toLocaleString()} and exception)`
+                  : over5k        ? `Collection Team (over ${cur.sym}${cur.threshold.toLocaleString()})`
+                  : o.exc         ? 'Collection Team (exception over 3 mo)' : null,
       amount: v
     }));
   }
@@ -457,9 +541,9 @@
     ].map(o => ({
       durLabel:o.label, durSub:o.sub, exc:o.exc, n:o.n, unit:'weekly',
       needsApproval: over5k||o.exc,
-      approvalNote: over5k&&o.exc ? `Collection Team (>${cur.sym}${cur.threshold.toLocaleString()} + exception)`
-                  : over5k        ? `Collection Team (>${cur.sym}${cur.threshold.toLocaleString()})`
-                  : o.exc         ? 'Collection Team (exception >3 mo)' : null,
+      approvalNote: over5k&&o.exc ? `Collection Team (over ${cur.sym}${cur.threshold.toLocaleString()} and exception)`
+                  : over5k        ? `Collection Team (over ${cur.sym}${cur.threshold.toLocaleString()})`
+                  : o.exc         ? 'Collection Team (exception over 3 mo)' : null,
       amount: v
     }));
   }
@@ -510,7 +594,7 @@
       const schedHtml = buildSchedule(p, tgt20, remEa, uid);
 
       const remCell = p.n === 1
-        ? `<span class="ap rem">${fmt(p.amount)}</span><span class="ap-sub">Full amount — single payment</span>`
+        ? `<span class="ap rem">${fmt(p.amount)}</span><span class="ap-sub">Full amount · single payment</span>`
         : `<span class="ap rem">${fmt(remEa)}</span><span class="ap-sub">× ${remN} remaining ${p.unit} payments</span>${schedHtml}`;
 
       const apBadge = p.needsApproval
@@ -544,11 +628,11 @@
           <tbody>${rows}</tbody>
         </table>
         <div class="legend">
-          <div class="leg-item"><div class="leg-sw" style="background:var(--green-bg);border-color:var(--green-mid)"></div>Strong 33% — buyer can commit more upfront</div>
-          <div class="leg-item"><div class="leg-sw" style="background:var(--blue-bg);border-color:var(--blue-mid)"></div>Target 20% — standard starting point</div>
-          <div class="leg-item"><div class="leg-sw" style="background:var(--orange-bg);border-color:var(--orange-mid)"></div>Min 15% — hardship only, always escalate first</div>
-          <div class="leg-item"><div class="leg-sw" style="background:var(--amber-bg);border-color:#F5D580"></div>Amber row = exception plan, justify before offering</div>
-          <div class="leg-item"><div class="leg-sw" style="background:var(--danger-bg);border-color:#F5C5C5"></div>Red badge = Collection Team sign-off required</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--green-bg);border-color:var(--green-mid)"></div>Strong 33% · buyer can commit more upfront</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--blue-bg);border-color:var(--blue-mid)"></div>Target 20% · standard starting point</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--orange-bg);border-color:var(--orange-mid)"></div>Min 15% · hardship only, always escalate first</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--amber-bg);border-color:#F5D580"></div>Amber row · exception plan, justify before offering</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--danger-bg);border-color:#F5C5C5"></div>Red badge · Collection Team sign-off required</div>
         </div>
       </div>
       <p class="footer-note">Schedule shows payments after the <strong>target 20% first payment</strong> · Always include all late fees · First payment within <strong>7 days</strong></p>`;
