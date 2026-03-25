@@ -343,17 +343,17 @@
       <div class="rule-card">
         <div class="rule-card-top">
           <div class="rule-icon neutral">👥</div>
-          <div class="rule-card-title">Over 6 months · escalate to Collections team</div>
+          <div class="rule-card-title">Over 6 months · tag Collections team</div>
         </div>
-        <div class="rule-card-body">Tag the Collections team in the support case and wait for approval before offering any plan beyond 6 months.</div>
+        <div class="rule-card-body">Do not escalate the case. Tag the Collections team in the support case and wait for their approval before offering any plan beyond 6 months.</div>
       </div>
 
       <div class="rule-card">
         <div class="rule-card-top">
           <div class="rule-icon neutral">💶</div>
-          <div class="rule-card-title">Over threshold · escalate to Collections team</div>
+          <div class="rule-card-title">Over threshold · tag Collections team</div>
         </div>
-        <div class="rule-card-body">Tag the Collections team in the support case and wait for approval before confirming any high-value plan.</div>
+        <div class="rule-card-body">Do not escalate the case. Tag the Collections team in the support case and wait for their approval before confirming any high-value plan.</div>
       </div>
 
       <div class="rule-card">
@@ -499,7 +499,7 @@
     const al = E('alert');
     if (over5k) {
       al.className = 'alert show';
-      al.innerHTML = `⚠ <strong>Escalate to Collections team for approval</strong> · This plan total exceeds ${cur.sym}${cur.threshold.toLocaleString()}. Tag the Collections team in the support case before confirming anything with the buyer.`;
+      al.innerHTML = `⚠ <strong>Collections team involvement required</strong> · This plan total exceeds ${cur.sym}${cur.threshold.toLocaleString()}. Do not escalate the case — tag the Collections team in the support case for approval.`;
     } else { al.className = 'alert'; }
 
     E('stats').style.display = 'grid';
@@ -523,9 +523,9 @@
     ].map(o => ({
       durLabel:o.label, exc:o.exc, n:o.n, unit:'monthly',
       needsApproval: over5k||o.exc,
-      approvalNote: over5k&&o.exc ? `Escalate to Collections team · tag in support case (amount + exception)`
-                  : over5k        ? `Escalate to Collections team · tag in support case (amount over ${cur.sym}${cur.threshold.toLocaleString()})`
-                  : o.exc         ? `Escalate to Collections team · tag in support case (exception over 3 mo)` : null,
+      approvalNote: over5k&&o.exc ? `Tag Collections team in support case (amount + exception)`
+                  : over5k        ? `Tag Collections team in support case (amount over ${cur.sym}${cur.threshold.toLocaleString()})`
+                  : o.exc         ? `Tag Collections team in support case (exception over 3 mo)` : null,
       amount: v
     }));
   }
@@ -541,9 +541,9 @@
     ].map(o => ({
       durLabel:o.label, durSub:o.sub, exc:o.exc, n:o.n, unit:'weekly',
       needsApproval: over5k||o.exc,
-      approvalNote: over5k&&o.exc ? `Escalate to Collections team · tag in support case (amount + exception)`
-                  : over5k        ? `Escalate to Collections team · tag in support case (amount over ${cur.sym}${cur.threshold.toLocaleString()})`
-                  : o.exc         ? `Escalate to Collections team · tag in support case (exception over 3 mo)` : null,
+      approvalNote: over5k&&o.exc ? `Tag Collections team in support case (amount + exception)`
+                  : over5k        ? `Tag Collections team in support case (amount over ${cur.sym}${cur.threshold.toLocaleString()})`
+                  : o.exc         ? `Tag Collections team in support case (exception over 3 mo)` : null,
       amount: v
     }));
   }
@@ -632,7 +632,7 @@
           <div class="leg-item"><div class="leg-sw" style="background:var(--blue-bg);border-color:var(--blue-mid)"></div>Target 20% · standard starting point</div>
           <div class="leg-item"><div class="leg-sw" style="background:var(--orange-bg);border-color:var(--orange-mid)"></div>Min 15% · hardship only, always escalate first</div>
           <div class="leg-item"><div class="leg-sw" style="background:var(--amber-bg);border-color:#F5D580"></div>Amber row · exception plan, justify before offering</div>
-          <div class="leg-item"><div class="leg-sw" style="background:var(--danger-bg);border-color:#F5C5C5"></div>Red badge · escalate to Collections team and tag in support case</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--danger-bg);border-color:#F5C5C5"></div>Red badge · tag Collections team in the support case — do not escalate</div>
         </div>
       </div>
       <p class="footer-note">Schedule shows payments after the <strong>target 20% first payment</strong> · Always include all late fees · First payment within <strong>7 days</strong></p>`;
