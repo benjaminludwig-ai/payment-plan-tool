@@ -286,20 +286,20 @@
       <label class="field-label">Invoice amount</label>
       <div class="amt-row">
         <select class="currency-select" id="currency" onchange="updateSymbol()">
-          <option value="EUR" data-sym="€" selected>EUR</option>
-          <option value="GBP" data-sym="£">GBP</option>
+          <option value="EUR" data-sym="€">EUR</option>
+          <option value="GBP" data-sym="£" selected>GBP</option>
           <option value="SEK" data-sym="kr">SEK</option>
           <option value="NOK" data-sym="kr">NOK</option>
           <option value="PLN" data-sym="zł">PLN</option>
           <option value="USD" data-sym="$">USD</option>
         </select>
         <div class="amt-wrap">
-          <span class="amt-sym" id="amtSym">€</span>
-          <input class="amt-input" type="number" id="amt" placeholder="0.00" min="250" step="0.01"/>
+          <span class="amt-sym" id="amtSym">£</span>
+          <input class="amt-input" type="number" id="amt" placeholder="0.00" min="1000" step="0.01"/>
         </div>
       </div>
       <div class="input-error" id="amtErr"></div>
-      <div class="field-hint">* Incl. all late fees · minimum <span id="hintMin">€250</span></div>
+      <div class="field-hint">* Incl. all late fees · minimum <span id="hintMin">£1,000</span></div>
     </div>
     <div>
       <label class="field-label">Frequency</label>
@@ -343,17 +343,17 @@
       <div class="rule-card">
         <div class="rule-card-top">
           <div class="rule-icon neutral">👥</div>
-          <div class="rule-card-title">Over 6 months requires Collection Team approval</div>
+          <div class="rule-card-title">Over 6 months · escalate to Collections team</div>
         </div>
-        <div class="rule-card-body">Formal sign-off is required before offering any plan beyond 6 months.</div>
+        <div class="rule-card-body">Tag the Collections team in the support case and wait for approval before offering any plan beyond 6 months.</div>
       </div>
 
       <div class="rule-card">
         <div class="rule-card-top">
           <div class="rule-icon neutral">💶</div>
-          <div class="rule-card-title">Over €5,000 requires Collection Team approval</div>
+          <div class="rule-card-title">Over threshold · escalate to Collections team</div>
         </div>
-        <div class="rule-card-body">Get sign-off before confirming any plan with a total above this threshold.</div>
+        <div class="rule-card-body">Tag the Collections team in the support case and wait for approval before confirming any high-value plan.</div>
       </div>
 
       <div class="rule-card">
@@ -449,9 +449,9 @@
     USD: { sym: '$',  code: 'USD', locale: 'en-US', threshold: 5400 },
   };
 
-  const MIN_AMOUNTS = { EUR:250, GBP:215, SEK:2800, NOK:2800, PLN:1100, USD:270 };
+  const MIN_AMOUNTS = { EUR:250, GBP:1000, SEK:2800, NOK:2800, PLN:1100, USD:270 };
 
-  function getCur() { return CURRENCIES[E('currency').value]; }
+  function getCur() { return CURRENCIES[E('currency').value] || CURRENCIES['GBP']; }
 
   function fmt(n) {
     const c = getCur();
@@ -499,7 +499,7 @@
     const al = E('alert');
     if (over5k) {
       al.className = 'alert show';
-      al.innerHTML = `⚠ <strong>Collection Team approval required</strong> · This plan total exceeds ${cur.sym}${cur.threshold.toLocaleString()}. Get formal sign-off before confirming anything with the buyer.`;
+      al.innerHTML = `⚠ <strong>Escalate to Collections team for approval</strong> · This plan total exceeds ${cur.sym}${cur.threshold.toLocaleString()}. Tag the Collections team in the support case before confirming anything with the buyer.`;
     } else { al.className = 'alert'; }
 
     E('stats').style.display = 'grid';
@@ -523,9 +523,9 @@
     ].map(o => ({
       durLabel:o.label, exc:o.exc, n:o.n, unit:'monthly',
       needsApproval: over5k||o.exc,
-      approvalNote: over5k&&o.exc ? `Collection Team (over ${cur.sym}${cur.threshold.toLocaleString()} and exception)`
-                  : over5k        ? `Collection Team (over ${cur.sym}${cur.threshold.toLocaleString()})`
-                  : o.exc         ? 'Collection Team (exception over 3 mo)' : null,
+      approvalNote: over5k&&o.exc ? `Escalate to Collections team · tag in support case (amount + exception)`
+                  : over5k        ? `Escalate to Collections team · tag in support case (amount over ${cur.sym}${cur.threshold.toLocaleString()})`
+                  : o.exc         ? `Escalate to Collections team · tag in support case (exception over 3 mo)` : null,
       amount: v
     }));
   }
@@ -541,9 +541,9 @@
     ].map(o => ({
       durLabel:o.label, durSub:o.sub, exc:o.exc, n:o.n, unit:'weekly',
       needsApproval: over5k||o.exc,
-      approvalNote: over5k&&o.exc ? `Collection Team (over ${cur.sym}${cur.threshold.toLocaleString()} and exception)`
-                  : over5k        ? `Collection Team (over ${cur.sym}${cur.threshold.toLocaleString()})`
-                  : o.exc         ? 'Collection Team (exception over 3 mo)' : null,
+      approvalNote: over5k&&o.exc ? `Escalate to Collections team · tag in support case (amount + exception)`
+                  : over5k        ? `Escalate to Collections team · tag in support case (amount over ${cur.sym}${cur.threshold.toLocaleString()})`
+                  : o.exc         ? `Escalate to Collections team · tag in support case (exception over 3 mo)` : null,
       amount: v
     }));
   }
@@ -632,7 +632,7 @@
           <div class="leg-item"><div class="leg-sw" style="background:var(--blue-bg);border-color:var(--blue-mid)"></div>Target 20% · standard starting point</div>
           <div class="leg-item"><div class="leg-sw" style="background:var(--orange-bg);border-color:var(--orange-mid)"></div>Min 15% · hardship only, always escalate first</div>
           <div class="leg-item"><div class="leg-sw" style="background:var(--amber-bg);border-color:#F5D580"></div>Amber row · exception plan, justify before offering</div>
-          <div class="leg-item"><div class="leg-sw" style="background:var(--danger-bg);border-color:#F5C5C5"></div>Red badge · Collection Team sign-off required</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--danger-bg);border-color:#F5C5C5"></div>Red badge · escalate to Collections team and tag in support case</div>
         </div>
       </div>
       <p class="footer-note">Schedule shows payments after the <strong>target 20% first payment</strong> · Always include all late fees · First payment within <strong>7 days</strong></p>`;
