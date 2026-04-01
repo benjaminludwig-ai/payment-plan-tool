@@ -17,29 +17,21 @@
     --grey-2:     #E8E8E8;
     --grey-1:     #F4F4F2;
     --white:      #FFFFFF;
-
     --green:      #167A40;
     --green-bg:   #EDFAF3;
     --green-mid:  #A8DFC0;
     --blue:       #2B52C8;
     --blue-bg:    #EEF1FC;
     --blue-mid:   #A0B4EE;
-    --orange:     #C96000;
-    --orange-bg:  #FFF4E6;
-    --orange-mid: #F5C080;
-
     --amber:      #D97706;
     --amber-bg:   #FEF3C7;
     --danger:     #C02020;
     --danger-bg:  #FFF0F0;
     --ok:         #167A40;
     --ok-bg:      #EDFAF3;
-
     --font: 'Inter', sans-serif;
-    --r:    10px;
-    --r-sm: 6px;
+    --r: 10px; --r-sm: 6px;
   }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: var(--font); background: var(--grey-1); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
@@ -61,42 +53,32 @@
     display: grid; grid-template-columns: 1fr 160px 160px auto; gap: 16px; align-items: end;
   }
   .field-label { font-size: 11px; font-weight: 700; color: var(--grey-5); letter-spacing: 0.1px; margin-bottom: 8px; display: block; }
-
-  /* Currency + amount row */
   .amt-row { display: flex; gap: 0; }
   .currency-select {
-    padding: 0 10px; height: 52px;
-    font-size: 13px; font-weight: 700; font-family: var(--font);
-    color: var(--black); background: var(--grey-2);
-    border: 1.5px solid var(--grey-2); border-right: none;
-    border-radius: var(--r-sm) 0 0 var(--r-sm);
-    outline: none; cursor: pointer; min-width: 70px;
+    padding: 0 10px; height: 52px; font-size: 13px; font-weight: 700; font-family: var(--font);
+    color: var(--black); background: var(--grey-2); border: 1.5px solid var(--grey-2); border-right: none;
+    border-radius: var(--r-sm) 0 0 var(--r-sm); outline: none; cursor: pointer; min-width: 70px;
     appearance: none; -webkit-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236E6E6E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 8px center;
-    padding-right: 24px;
+    background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px;
     transition: background-color .15s;
   }
   .currency-select:focus { background-color: var(--grey-3); }
-
   .amt-wrap { position: relative; flex: 1; }
-  .amt-sym  { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 18px; font-weight: 600; color: var(--grey-3); pointer-events: none; }
+  .amt-sym { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 18px; font-weight: 600; color: var(--grey-3); pointer-events: none; }
   .amt-input {
     width: 100%; padding: 13px 16px 13px 30px; height: 52px;
-    font-size: 22px; font-weight: 700; font-family: var(--font);
-    color: var(--black); background: var(--grey-1);
-    border: 1.5px solid var(--grey-2); border-radius: 0 var(--r-sm) var(--r-sm) 0;
-    outline: none; letter-spacing: -0.5px;
+    font-size: 22px; font-weight: 700; font-family: var(--font); color: var(--black);
+    background: var(--grey-1); border: 1.5px solid var(--grey-2);
+    border-radius: 0 var(--r-sm) var(--r-sm) 0; outline: none; letter-spacing: -0.5px;
     transition: border-color .15s, background .15s;
   }
   .amt-input:focus { border-color: var(--black); background: var(--white); }
   .amt-input::placeholder { color: var(--grey-3); font-weight: 400; font-size: 18px; }
   .amt-input.err { border-color: var(--danger); background: var(--danger-bg); }
-
   .seg { display: flex; background: var(--grey-1); border: 1.5px solid var(--grey-2); border-radius: var(--r-sm); padding: 3px; gap: 3px; height: 52px; }
   .seg button { flex: 1; padding: 8px 10px; font-size: 13px; font-weight: 600; font-family: var(--font); border: none; border-radius: 5px; cursor: pointer; background: transparent; color: var(--grey-5); transition: background .15s, color .15s; white-space: nowrap; }
   .seg button.on { background: var(--black); color: var(--white); box-shadow: 0 1px 4px rgba(0,0,0,.18); }
-
   .generate-btn {
     padding: 0 26px; height: 52px; background: var(--black); color: var(--white);
     border: none; border-radius: var(--r-sm); font-size: 14px; font-weight: 700;
@@ -107,71 +89,37 @@
   .generate-btn:active { transform: none; }
   .generate-btn svg { transition: transform .15s; }
   .generate-btn:hover svg { transform: translateX(3px); }
-
   .input-error { font-size: 11px; color: var(--danger); font-weight: 600; margin-top: 5px; display: none; }
   .input-error.show { display: block; }
-  .field-hint { font-size: 11px; color: var(--grey-4); margin-top: 5px; }
+  /* Red hint text */
+  .field-hint { font-size: 11px; color: var(--danger); font-weight: 600; margin-top: 5px; }
 
-  /* ── RULES PANEL — Apple style ── */
-  .rules-panel {
-    margin-bottom: 20px;
-  }
-  .rules-section-label {
-    font-size: 13px; font-weight: 700; color: var(--ink);
-    margin-bottom: 14px; text-align: center; letter-spacing: 0.1px;
-  }
-  .rules-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
-  .rule-card {
-    background: var(--white);
-    border: 1px solid var(--grey-2);
-    border-radius: 14px;
-    padding: 18px 18px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    transition: box-shadow .15s;
-  }
+  /* ── RULES PANEL ── */
+  .rules-panel { margin-bottom: 20px; }
+  .rules-section-label { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 14px; text-align: center; letter-spacing: 0.1px; }
+  .rules-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .rule-card { background: var(--white); border: 1px solid var(--grey-2); border-radius: 14px; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px; transition: box-shadow .15s; }
   .rule-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
-  .rule-card.is-warn {
-    background: #FFFAFA;
-    border-color: #F5DADA;
-  }
-  .rule-card-top {
-    display: flex; align-items: center; gap: 10px;
-  }
-  .rule-icon {
-    width: 36px; height: 36px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 17px; flex-shrink: 0;
-  }
+  .rule-card.is-warn { background: #FFFAFA; border-color: #F5DADA; }
+  .rule-card-top { display: flex; align-items: center; gap: 10px; }
+  .rule-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
   .rule-icon.neutral { background: var(--grey-1); }
   .rule-icon.warn    { background: #FDECEA; }
-  .rule-card-title {
-    font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.25;
-  }
+  .rule-card-title { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.25; }
   .rule-card.is-warn .rule-card-title { color: var(--danger); }
-  .rule-card-body {
-    font-size: 12px; color: var(--grey-5); line-height: 1.5;
-    padding-left: 46px;
-    margin-top: -4px;
-  }
+  .rule-card-body { font-size: 12px; color: var(--grey-5); line-height: 1.5; padding-left: 46px; margin-top: -4px; }
 
   /* ── ALERT ── */
   .alert { display: none; background: var(--danger-bg); border: 1px solid #F5C5C5; border-left: 4px solid var(--danger); border-radius: var(--r-sm); padding: 13px 16px; margin-bottom: 20px; font-size: 13px; color: var(--danger); font-weight: 600; }
   .alert.show { display: block; }
 
-  /* ── STAT CARDS ── */
-  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 24px; }
+  /* ── STAT CARDS — now 3 cards (no min) ── */
+  .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 24px; }
   .stat-card { background: var(--white); border: 1px solid var(--grey-2); border-radius: var(--r); padding: 18px 20px 16px; }
   .stat-card .s-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1px; color: var(--grey-4); margin-bottom: 8px; }
   .stat-card .s-val   { font-size: 22px; font-weight: 800; letter-spacing: -0.6px; line-height: 1; color: var(--black); }
-  .stat-card .s-val.green-c  { color: var(--green); }
-  .stat-card .s-val.blue-c   { color: var(--blue); }
-  .stat-card .s-val.orange-c { color: var(--orange); }
+  .stat-card .s-val.green-c { color: var(--green); }
+  .stat-card .s-val.blue-c  { color: var(--blue); }
   .stat-card .s-sub { font-size: 11px; color: var(--grey-4); margin-top: 5px; }
   .stat-card.accent-card { background: var(--black); border-color: var(--black); }
   .stat-card.accent-card .s-label { color: rgba(255,255,255,0.4); }
@@ -202,48 +150,60 @@
   .d-pill.exc { background: var(--amber-bg); color: var(--amber); border: 1px solid #F5D580; }
   .d-pill-note { font-size: 10px; color: var(--grey-4); display: block; margin-top: 3px; }
 
-  /* Payment amount chips — ordered strong > target > min */
-  .ap { display: inline-block; font-size: 13px; font-weight: 700; padding: 5px 10px; border-radius: var(--r-sm); font-variant-numeric: tabular-nums; }
-  .ap.str    { background: var(--green-bg);  color: var(--green); }
-  .ap.tgt    { background: var(--blue-bg);   color: var(--blue); }
-  .ap.min    { background: var(--orange-bg); color: var(--orange); }
-  .ap.rem    { background: var(--grey-1);    color: var(--ink); font-size: 13px; }
-  .ap-sub    { font-size: 10px; color: var(--grey-4); display: block; margin-top: 3px; }
-  .ap-warn   { font-size: 10px; color: var(--orange); display: block; margin-top: 3px; font-weight: 600; }
+  /* ── PROPOSAL SELECTOR — replaces old ap chips ── */
+  .proposal-cell { display: flex; flex-direction: column; gap: 8px; }
+
+  .proposal-btn {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; border-radius: var(--r-sm); cursor: pointer;
+    border: 1.5px solid transparent; transition: all .15s; user-select: none;
+    gap: 10px;
+  }
+  .proposal-btn.p1 { background: var(--green-bg); border-color: var(--green-mid); }
+  .proposal-btn.p1:hover { border-color: var(--green); }
+  .proposal-btn.p1.selected { border-color: var(--green); box-shadow: 0 0 0 2px rgba(22,122,64,0.15); }
+  .proposal-btn.p2 { background: var(--blue-bg); border-color: var(--blue-mid); }
+  .proposal-btn.p2:hover { border-color: var(--blue); }
+  .proposal-btn.p2.selected { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(43,82,200,0.15); }
+
+  .proposal-left { display: flex; flex-direction: column; gap: 2px; }
+  .proposal-label { font-size: 10px; font-weight: 700; letter-spacing: 0.3px; }
+  .proposal-btn.p1 .proposal-label { color: var(--green); }
+  .proposal-btn.p2 .proposal-label { color: var(--blue); }
+  .proposal-amount { font-size: 15px; font-weight: 800; letter-spacing: -0.3px; font-variant-numeric: tabular-nums; }
+  .proposal-btn.p1 .proposal-amount { color: var(--green); }
+  .proposal-btn.p2 .proposal-amount { color: var(--blue); }
+  .proposal-pct { font-size: 10px; font-weight: 600; }
+  .proposal-btn.p1 .proposal-pct { color: rgba(22,122,64,0.6); }
+  .proposal-btn.p2 .proposal-pct { color: rgba(43,82,200,0.6); }
+
+  .proposal-toggle-icon { flex-shrink: 0; font-size: 11px; transition: transform .2s; }
+  .proposal-btn.selected .proposal-toggle-icon { transform: rotate(180deg); }
+
+  /* Expandable schedule inside the proposal */
+  .proposal-schedule {
+    display: none; overflow: hidden;
+    background: var(--white); border: 1px solid var(--grey-2);
+    border-radius: var(--r-sm); margin-top: -2px;
+  }
+  .proposal-schedule.open { display: block; }
+  .sched-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 12px; background: var(--grey-1); border-bottom: 1px solid var(--grey-2);
+    font-size: 10px; font-weight: 700; color: var(--grey-4); letter-spacing: 0.3px;
+  }
+  .sched-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 12px; border-bottom: 1px solid var(--grey-2); font-size: 12px; }
+  .sched-row:last-child { border-bottom: none; }
+  .sched-row .sr-num  { color: var(--grey-4); font-weight: 600; width: 28px; }
+  .sched-row .sr-type { color: var(--grey-5); flex: 1; padding: 0 8px; }
+  .sched-row .sr-amt  { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .sched-row.first-sched-row { background: #FAFFFE; }
+  .sched-row.first-sched-row .sr-amt { color: var(--green); }
 
   /* Approval badge */
   .apb { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
   .apb.ok  { background: var(--ok-bg);     color: var(--ok); }
   .apb.req { background: var(--danger-bg); color: var(--danger); }
-
-  /* ── EXPANDABLE SCHEDULE ── */
-  .schedule-toggle {
-    display: inline-flex; align-items: center; gap: 6px;
-    margin-top: 6px; padding: 5px 10px;
-    background: var(--grey-1); border: 1px solid var(--grey-2);
-    border-radius: 20px; font-size: 11px; font-weight: 600; color: var(--grey-5);
-    cursor: pointer; user-select: none; transition: background .12s, color .12s;
-  }
-  .schedule-toggle:hover { background: var(--grey-2); color: var(--ink); }
-  .schedule-toggle .arrow { font-size: 9px; transition: transform .2s; display: inline-block; }
-  .schedule-toggle.open .arrow { transform: rotate(180deg); }
-
-  .schedule-body {
-    display: none;
-    margin-top: 8px;
-    background: var(--grey-1);
-    border: 1px solid var(--grey-2);
-    border-radius: var(--r-sm);
-    overflow: hidden;
-  }
-  .schedule-body.open { display: block; }
-  .schedule-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 12px; border-bottom: 1px solid var(--grey-2); font-size: 12px; }
-  .schedule-row:last-child { border-bottom: none; }
-  .schedule-row .s-num { color: var(--grey-4); font-weight: 600; width: 28px; }
-  .schedule-row .s-type { color: var(--grey-5); flex: 1; padding: 0 8px; }
-  .schedule-row .s-amt { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); }
-  .schedule-row.first-row { background: var(--white); }
-  .schedule-row.first-row .s-amt { color: var(--green); }
 
   /* ── LEGEND ── */
   .legend { display: flex; flex-wrap: wrap; gap: 10px 22px; padding: 13px 18px; background: var(--grey-1); border-top: 1px solid var(--grey-2); }
@@ -256,6 +216,81 @@
   .empty h3 { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
   .empty p  { font-size: 13px; color: var(--grey-5); max-width: 360px; margin: 0 auto; }
 
+  .invoice-line { display: flex; align-items: center; gap: 6px; }
+  .add-line-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; font-family: var(--font);
+    color: var(--blue); background: var(--blue-bg);
+    border: 1px solid var(--blue-mid); border-radius: var(--r-sm);
+    padding: 7px 14px; cursor: pointer; transition: background .12s;
+  }
+  .add-line-btn:hover { background: #DDE6FA; }
+
+  /* Duration time bar */
+  .timebar-wrap {
+    position: relative;
+    user-select: none;
+  }
+  .timebar-track {
+    position: relative;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--grey-2);
+    margin: 18px 0 24px;
+    cursor: pointer;
+  }
+  .timebar-fill {
+    position: absolute; left: 0; top: 0; height: 100%;
+    border-radius: 3px;
+    background: var(--green);
+    pointer-events: none;
+    transition: width .15s, background .2s;
+  }
+  .timebar-fill.needs-approval { background: var(--danger); }
+  .timebar-thumb {
+    position: absolute; top: 50%;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2.5px solid var(--green);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.18);
+    cursor: grab; transition: border-color .2s, transform .1s;
+    z-index: 2;
+  }
+  .timebar-thumb.needs-approval { border-color: var(--danger); }
+  .timebar-thumb:active { cursor: grabbing; transform: translate(-50%,-50%) scale(1.15); }
+  .timebar-ticks {
+    position: absolute; top: 0; left: 0; right: 0; height: 6px;
+    pointer-events: none;
+  }
+  .timebar-tick {
+    position: absolute; top: -4px;
+    width: 2px; height: 14px;
+    border-radius: 1px;
+    background: var(--grey-3);
+    transform: translateX(-50%);
+  }
+  .timebar-tick.major { background: var(--grey-4); height: 16px; top: -5px; }
+  .timebar-labels {
+    display: flex; justify-content: space-between;
+    position: absolute; bottom: -22px; left: 0; right: 0;
+  }
+  .timebar-label {
+    position: absolute;
+    font-size: 10px; font-weight: 600; color: var(--grey-4);
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  .timebar-label.active { color: var(--ink); font-weight: 700; }
+  .timebar-label.exc-label { color: var(--amber); }
+  .timebar-selected {
+    text-align: center;
+    font-size: 13px; font-weight: 700; color: var(--green);
+    margin-bottom: 4px; letter-spacing: -0.2px;
+    min-height: 20px; transition: color .2s;
+  }
+  .timebar-selected.needs-approval { color: var(--danger); }
   .footer-note { font-size: 11px; color: var(--grey-4); text-align: center; margin-top: 14px; line-height: 1.6; }
 
   @media (max-width: 840px) {
@@ -275,128 +310,65 @@
 
 <div class="hero">
   <h1>Payment Plan Calculator</h1>
-  <p>Enter an invoice total to instantly generate SOP-compliant instalment options for your buyer.</p>
 </div>
 
 <div class="main">
 
   <!-- INPUT -->
-  <div class="input-panel">
-    <div>
-      <label class="field-label">Invoice amount</label>
-      <div class="amt-row">
-        <select class="currency-select" id="currency" onchange="updateSymbol()">
-          <option value="EUR" data-sym="€">EUR</option>
-          <option value="GBP" data-sym="£" selected>GBP</option>
-          <option value="SEK" data-sym="kr">SEK</option>
-          <option value="NOK" data-sym="kr">NOK</option>
-          <option value="PLN" data-sym="zł">PLN</option>
-          <option value="USD" data-sym="$">USD</option>
-        </select>
-        <div class="amt-wrap">
-          <span class="amt-sym" id="amtSym">£</span>
-          <input class="amt-input" type="number" id="amt" placeholder="0.00" min="1000" step="0.01"/>
-        </div>
-      </div>
-      <div class="input-error" id="amtErr"></div>
-      <div class="field-hint">* Incl. all late fees · minimum <span id="hintMin">£1,000</span></div>
+  <div class="input-panel" style="display:block;padding:24px 28px 22px;">
+
+    <!-- Invoice header -->
+    <label class="field-label" style="margin-bottom:4px;">Invoices</label>
+    <div class="field-hint" style="margin-bottom:10px;">Minimum payment plan amount <span id="hintMin">GBP 1,000</span></div>
+
+    <!-- Invoice lines -->
+    <div id="invoiceLines" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+
+    <button onclick="addLine()" class="add-line-btn">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Add invoice
+    </button>
+
+    <div class="input-error" id="amtErr" style="margin-top:8px;"></div>
+
+    <!-- Total row -->
+    <div id="totalDisplay" style="display:none;margin-top:10px;padding:10px 14px;background:var(--grey-1);border:1px solid var(--grey-2);border-radius:var(--r-sm);align-items:center;justify-content:space-between;">
+      <span style="font-size:12px;font-weight:600;color:var(--grey-5);">Total outstanding</span>
+      <span id="totalVal" style="font-size:18px;font-weight:800;color:var(--black);letter-spacing:-0.4px;">£0.00</span>
     </div>
-    <div>
-      <label class="field-label">Frequency</label>
-      <div class="seg">
-        <button id="btnM" class="on" onclick="setFreq('m')">Monthly</button>
-        <button id="btnW"            onclick="setFreq('w')">Weekly</button>
-      </div>
-    </div>
-    <div>
-      <label class="field-label">&nbsp;</label>
-      <button class="generate-btn" onclick="run()">
-        Generate
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M2 7h10M8 3l4 4-4 4" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    </div>
-  </div>
 
-  <!-- RULES -->
-  <div class="rules-panel">
-    <div class="rules-section-label">SOP Rules · read before creating any plan</div>
-    <div class="rules-grid">
+    <!-- Late fee reminder below total -->
+    <div id="hintWrap" style="margin-top:6px;" class="field-hint">Ensure all charged late fees are included</div>
 
-      <div class="rule-card">
-        <div class="rule-card-top">
-          <div class="rule-icon neutral">📄</div>
-          <div class="rule-card-title">Only late invoices are eligible</div>
+    <!-- Frequency above, Duration below — stacked centred -->
+    <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--grey-2);">
+
+      <!-- Frequency -->
+      <div style="display:flex;justify-content:center;margin-bottom:16px;">
+        <div>
+          <label class="field-label" style="text-align:center;display:block;margin-bottom:6px;">Frequency</label>
+          <div class="seg" style="width:200px;">
+            <button id="btnM" onclick="setFreq('m')">Monthly</button>
+            <button id="btnW" class="on" onclick="setFreq('w')">Weekly</button>
+          </div>
         </div>
-        <div class="rule-card-body">Current or future-dated invoices cannot be included in a payment plan.</div>
       </div>
 
-      <div class="rule-card">
-        <div class="rule-card-top">
-          <div class="rule-icon neutral">📅</div>
-          <div class="rule-card-title">Standard maximum is 3 months</div>
+      <!-- Duration time bar -->
+      <div style="max-width:600px;margin:0 auto;">
+        <label class="field-label" style="text-align:center;display:block;margin-bottom:6px;">Duration</label>
+        <div class="timebar-wrap" id="timebarWrap">
+          <div class="timebar-selected" id="timebarLabel">4 weeks</div>
+          <div class="timebar-track" id="timebarTrack">
+            <div class="timebar-fill" id="timebarFill"></div>
+            <div class="timebar-ticks" id="timebarTicks"></div>
+            <div class="timebar-thumb" id="timebarThumb"></div>
+          </div>
         </div>
-        <div class="rule-card-body">Exception up to 6 months is possible but must be clearly justified.</div>
-      </div>
-
-      <div class="rule-card">
-        <div class="rule-card-top">
-          <div class="rule-icon neutral">👥</div>
-          <div class="rule-card-title">Over 6 months · tag Collections team</div>
-        </div>
-        <div class="rule-card-body">Do not escalate the case. Tag the Collections team in the support case and wait for their approval before offering any plan beyond 6 months.</div>
-      </div>
-
-      <div class="rule-card">
-        <div class="rule-card-top">
-          <div class="rule-icon neutral">💶</div>
-          <div class="rule-card-title">Over threshold · tag Collections team</div>
-        </div>
-        <div class="rule-card-body">Do not escalate the case. Tag the Collections team in the support case and wait for their approval before confirming any high-value plan.</div>
-      </div>
-
-      <div class="rule-card">
-        <div class="rule-card-top">
-          <div class="rule-icon neutral">⏱</div>
-          <div class="rule-card-title">First payment is due within 7 days</div>
-        </div>
-        <div class="rule-card-body">This demonstrates the buyer's serious commitment to the payment plan.</div>
-      </div>
-
-      <div class="rule-card">
-        <div class="rule-card-top">
-          <div class="rule-icon neutral">📧</div>
-          <div class="rule-card-title">Confirm every plan by email</div>
-        </div>
-        <div class="rule-card-body">Include invoice list, total amount, instalment schedule, due dates and payment reference.</div>
-      </div>
-
-      <div class="rule-card is-warn">
-        <div class="rule-card-top">
-          <div class="rule-icon warn">🚫</div>
-          <div class="rule-card-title">Never waive late fees</div>
-        </div>
-        <div class="rule-card-body">Always add all late fees to the total before calculating any instalment amounts.</div>
-      </div>
-
-      <div class="rule-card is-warn">
-        <div class="rule-card-top">
-          <div class="rule-icon warn">🏦</div>
-          <div class="rule-card-title">No DCA invoices</div>
-        </div>
-        <div class="rule-card-body">Invoices already sent to a debt collection agency are excluded from payment plans.</div>
-      </div>
-
-      <div class="rule-card is-warn">
-        <div class="rule-card-top">
-          <div class="rule-icon warn">⛔</div>
-          <div class="rule-card-title">Previous default means not eligible</div>
-        </div>
-        <div class="rule-card-body">If a buyer broke a prior payment plan, no new plan can be offered to them.</div>
       </div>
 
     </div>
+
   </div>
 
   <div class="alert" id="alert"></div>
@@ -409,19 +381,14 @@
       <div class="s-sub" id="sCurLabel">incl. all late fees</div>
     </div>
     <div class="stat-card">
-      <div class="s-label">Strong 1st Payment · 33%</div>
+      <div class="s-label">1st Proposal · 33%</div>
       <div class="s-val green-c" id="sStr">—</div>
-      <div class="s-sub">Use when buyer can commit more</div>
+      <div class="s-sub">Preferred starting point</div>
     </div>
     <div class="stat-card">
-      <div class="s-label">Target 1st Payment · 20%</div>
+      <div class="s-label">2nd Proposal · 20%</div>
       <div class="s-val blue-c" id="sTgt">—</div>
-      <div class="s-sub">Standard starting point</div>
-    </div>
-    <div class="stat-card">
-      <div class="s-label">Min 1st Payment · 15%</div>
-      <div class="s-val orange-c" id="sMin">—</div>
-      <div class="s-sub">Escalate first · hardship only</div>
+      <div class="s-sub">If buyer needs more flexibility</div>
     </div>
   </div>
 
@@ -430,15 +397,68 @@
     <div class="empty">
       <div class="empty-icon">📋</div>
       <h3>No plan generated yet</h3>
-      <p>Enter the invoice total above (including all late fees) and click <strong>Generate</strong> to see all valid instalment options.</p>
+      <p>Enter invoice amounts and select a duration to see instalment options.</p>
+    </div>
+  </div>
+
+  <!-- RULES -->
+  <div class="rules-panel" style="margin-top:32px;">
+    <div class="rules-section-label">SOP Rules · read before creating any plan</div>
+    <div class="rules-grid">
+      <div class="rule-card">
+        <div class="rule-card-top"><div class="rule-icon neutral">📄</div><div class="rule-card-title">Only late invoices are eligible</div></div>
+        <div class="rule-card-body">Current or future-dated invoices cannot be included in a payment plan.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-card-top"><div class="rule-icon neutral">📅</div><div class="rule-card-title">Standard maximum is 3 months</div></div>
+        <div class="rule-card-body">Exception up to 6 months is possible but must be clearly justified.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-card-top"><div class="rule-icon neutral">👥</div><div class="rule-card-title">Over 6 months · tag Collections team</div></div>
+        <div class="rule-card-body">Do not escalate the case. Tag the Collections team in the support case and wait for their approval before offering any plan beyond 6 months.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-card-top"><div class="rule-icon neutral">💶</div><div class="rule-card-title">Over threshold · tag Collections team</div></div>
+        <div class="rule-card-body">Do not escalate the case. Tag the Collections team in the support case and wait for their approval before confirming any high-value plan.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-card-top"><div class="rule-icon neutral">⏱</div><div class="rule-card-title">First payment is due within 7 days</div></div>
+        <div class="rule-card-body">This demonstrates the buyer's serious commitment to the payment plan.</div>
+      </div>
+      <div class="rule-card">
+        <div class="rule-card-top"><div class="rule-icon neutral">📧</div><div class="rule-card-title">Confirm every plan by email</div></div>
+        <div class="rule-card-body">Include invoice list, total amount, instalment schedule, due dates and payment reference.</div>
+      </div>
+      <div class="rule-card is-warn">
+        <div class="rule-card-top"><div class="rule-icon warn">🚫</div><div class="rule-card-title">Never waive late fees</div></div>
+        <div class="rule-card-body">Always add all late fees to the total before calculating any instalment amounts.</div>
+      </div>
+      <div class="rule-card is-warn">
+        <div class="rule-card-top"><div class="rule-icon warn">🏦</div><div class="rule-card-title">No DCA invoices</div></div>
+        <div class="rule-card-body">Invoices already sent to a debt collection agency are excluded from payment plans.</div>
+      </div>
+      <div class="rule-card is-warn">
+        <div class="rule-card-top"><div class="rule-icon warn">⛔</div><div class="rule-card-title">Previous default means not eligible</div></div>
+        <div class="rule-card-body">If a buyer broke a prior payment plan, no new plan can be offered to them.</div>
+      </div>
     </div>
   </div>
 
 </div>
 
 <script>
-  let freq = 'm';
+  let freq = 'w'; // default weekly
+  let selectedDur = null;
+  let autoRunTimer = null;
   const E = id => document.getElementById(id);
+
+  function scheduleAutoRun() {
+    clearTimeout(autoRunTimer);
+    autoRunTimer = setTimeout(() => {
+      const v = recalcTotal();
+      if (v > 0) run();
+    }, 350);
+  }
 
   const CURRENCIES = {
     EUR: { sym: '€', code: 'EUR', locale: 'en-IE', threshold: 5000 },
@@ -448,51 +468,273 @@
     PLN: { sym: 'zł', code: 'PLN', locale: 'pl-PL', threshold: 22000 },
     USD: { sym: '$',  code: 'USD', locale: 'en-US', threshold: 5400 },
   };
+  const MIN_AMOUNTS = { EUR:1150, GBP:1000, SEK:12500, NOK:12900, PLN:4900, USD:1325 };
+  const CUR_LABELS  = { EUR:'EUR', GBP:'GBP', SEK:'SEK', NOK:'NOK', PLN:'PLN', USD:'USD' };
 
-  const MIN_AMOUNTS = { EUR:250, GBP:1000, SEK:2800, NOK:2800, PLN:1100, USD:270 };
+  const CUR_OPTS = [
+    { value:'EUR', sym:'€',  label:'EUR' },
+    { value:'GBP', sym:'£',  label:'GBP' },
+    { value:'SEK', sym:'kr', label:'SEK' },
+    { value:'NOK', sym:'kr', label:'NOK' },
+    { value:'PLN', sym:'zł', label:'PLN' },
+    { value:'USD', sym:'$',  label:'USD' },
+  ];
 
-  function getCur() { return CURRENCIES[E('currency').value] || CURRENCIES['GBP']; }
+  // Get currency from first line (used for threshold/min checks and formatting)
+  function getCur() {
+    const firstSel = document.querySelector('.line-cur');
+    const code = firstSel ? firstSel.value : 'GBP';
+    return CURRENCIES[code] || CURRENCIES['GBP'];
+  }
 
   function fmt(n) {
     const c = getCur();
     return c.sym + n.toLocaleString(c.locale, {minimumFractionDigits:2, maximumFractionDigits:2});
   }
 
+  function buildCurrencySelect(selectedVal) {
+    const opts = CUR_OPTS.map(o =>
+      `<option value="${o.value}" data-sym="${o.sym}"${o.value===selectedVal?' selected':''}>${o.label}</option>`
+    ).join('');
+    return `<select class="currency-select line-cur" style="min-width:72px;height:52px;" onchange="onLineCurChange(this)">${opts}</select>`;
+  }
+
+  function onLineCurChange(sel) {
+    const sym = sel.options[sel.selectedIndex].dataset.sym;
+    const wrap = sel.closest('.invoice-line').querySelector('.amt-sym');
+    if (wrap) wrap.textContent = sym;
+    // Update hint based on first line
+    const cur = getCur();
+    const minAmt = MIN_AMOUNTS[cur.code] || 250;
+    E('hintMin').textContent = `${cur.code} ${minAmt.toLocaleString()}`;
+    recalcTotal();
+  }
+
+  function makeLine(curCode) {
+    const div = document.createElement('div');
+    div.className = 'invoice-line';
+    const sym = (CUR_OPTS.find(o => o.value === curCode) || CUR_OPTS[1]).sym;
+    div.innerHTML = `
+      ${buildCurrencySelect(curCode)}
+      <div class="amt-wrap" style="flex:1;">
+        <span class="amt-sym">${sym}</span>
+        <input class="amt-input line-amt" type="number" placeholder="0.00" min="0" step="0.01" oninput="recalcTotal(true)"
+          style="border-radius:0 var(--r-sm) var(--r-sm) 0;"/>
+      </div>
+      <button onclick="removeLine(this)"
+        style="flex-shrink:0;width:36px;height:52px;background:var(--danger-bg);border:1px solid #F5C5C5;border-radius:var(--r-sm);cursor:pointer;font-size:16px;color:var(--danger);font-weight:700;display:flex;align-items:center;justify-content:center;margin-left:4px;">×</button>`;
+
+    // Tab on the input of the last line adds a new line and focuses it
+    const input = div.querySelector('.line-amt');
+    input.addEventListener('keydown', function(e) {
+      if (e.key !== 'Tab' || e.shiftKey) return;
+      const allInputs = Array.from(document.querySelectorAll('.line-amt'));
+      if (allInputs.indexOf(this) === allInputs.length - 1) {
+        e.preventDefault();
+        addLine();
+        // Focus the new line's input
+        const newInputs = document.querySelectorAll('.line-amt');
+        newInputs[newInputs.length - 1].focus();
+      }
+    });
+
+    return div;
+  }
+
+  function addLine() {
+    // New lines inherit currency of first line
+    const firstSel = document.querySelector('.line-cur');
+    const curCode  = firstSel ? firstSel.value : 'GBP';
+    E('invoiceLines').appendChild(makeLine(curCode));
+  }
+
+  function removeLine(btn) {
+    const lines = document.querySelectorAll('.invoice-line');
+    if (lines.length <= 1) return; // keep at least one line
+    btn.closest('.invoice-line').remove();
+    recalcTotal();
+  }
+
+  function recalcTotal(triggerAuto) {
+    const inputs = document.querySelectorAll('.line-amt');
+    let total = 0;
+    inputs.forEach(i => { const v = parseFloat(i.value); if (v > 0) total += v; });
+    const disp  = E('totalDisplay');
+    const valEl = E('totalVal');
+
+    if (total > 0) {
+      disp.style.display = 'flex';
+      valEl.textContent  = fmt(total);
+
+      // Colour-code based on approval rules
+      const cur    = getCur();
+      const minAmt = MIN_AMOUNTS[cur.code] || 1000;
+      const opts   = getDurOpts ? getDurOpts() : [];
+      const selOpt = opts.find(o => o.n === selectedDur);
+      const isExcDur = selOpt && selOpt.exc;
+      const needsApproval = total > cur.threshold || isExcDur;
+      const belowMin      = total < minAmt;
+
+      if (belowMin) {
+        // Below minimum — neutral grey
+        disp.style.background   = 'var(--grey-1)';
+        disp.style.borderColor  = 'var(--grey-2)';
+        valEl.style.color       = 'var(--grey-5)';
+      } else if (needsApproval) {
+        // Needs Collections team — red tint
+        disp.style.background   = 'var(--danger-bg)';
+        disp.style.borderColor  = '#F5C5C5';
+        valEl.style.color       = 'var(--danger)';
+      } else {
+        // All good — green tint
+        disp.style.background   = 'var(--green-bg)';
+        disp.style.borderColor  = 'var(--green-mid)';
+        valEl.style.color       = 'var(--green)';
+      }
+    } else {
+      disp.style.display = 'none';
+    }
+
+    if (triggerAuto) scheduleAutoRun();
+    return total;
+  }
+
   function updateSymbol() {
-    const c = getCur();
-    E('amtSym').textContent = c.sym;
-    E('amtErr').className = 'input-error';
-    E('amt').className = 'amt-input';
-    const minAmt = MIN_AMOUNTS[c.code] || 250;
-    E('hintMin').textContent = c.sym + minAmt.toLocaleString();
+    // legacy stub — no longer needed but kept safe
+    recalcTotal();
+  }
+
+  // Initialise with one invoice line on load
+  E('invoiceLines').appendChild(makeLine('GBP'));
+
+  const WEEKLY_OPTS  = [
+    {n:4,  label:'4 weeks',  exc:false}, {n:5,  label:'5 weeks',  exc:false},
+    {n:6,  label:'6 weeks',  exc:false}, {n:7,  label:'7 weeks',  exc:false},
+    {n:8,  label:'8 weeks',  exc:false}, {n:9,  label:'9 weeks',  exc:false},
+    {n:10, label:'10 weeks', exc:false}, {n:11, label:'11 weeks', exc:false},
+    {n:12, label:'12 weeks', exc:false}, {n:13, label:'13 weeks', exc:false},
+    {n:18, label:'18 weeks', exc:true }, {n:22, label:'22 weeks', exc:true },
+    {n:26, label:'26 weeks', exc:true },
+  ];
+  const MONTHLY_OPTS = [
+    {n:1, label:'1 month',  exc:false}, {n:2, label:'2 months', exc:false},
+    {n:3, label:'3 months', exc:false}, {n:4, label:'4 months', exc:true },
+    {n:5, label:'5 months', exc:true }, {n:6, label:'6 months', exc:true },
+  ];
+
+  function getDurOpts() { return freq === 'w' ? WEEKLY_OPTS : MONTHLY_OPTS; }
+
+  /* ── TIME BAR ── */
+  let tbDragging = false;
+
+  function buildDurToggle() {
+    const opts = getDurOpts();
+    // Snap selectedDur to nearest valid option
+    if (!opts.find(o => o.n === selectedDur)) {
+      selectedDur = opts[0].n;
+    }
+    renderTimebar(opts);
+  }
+
+  function renderTimebar(opts) {
+    const track  = E('timebarTrack');
+    const ticks  = E('timebarTicks');
+    const thumb  = E('timebarThumb');
+    const fill   = E('timebarFill');
+    const label  = E('timebarLabel');
+
+    const total  = opts.length - 1;
+    const idx    = opts.findIndex(o => o.n === selectedDur);
+    const pct    = total === 0 ? 0 : (idx / total) * 100;
+    const opt    = opts[idx];
+    const isExc   = opt && opt.exc;
+    const total_v = recalcTotal();
+    const cur_v   = getCur();
+    const needsAp = isExc || (total_v > 0 && total_v > (cur_v ? cur_v.threshold : 5000));
+
+    // Fill
+    fill.style.width  = pct + '%';
+    fill.className    = 'timebar-fill' + (needsAp ? ' needs-approval' : '');
+
+    // Thumb
+    thumb.style.left  = pct + '%';
+    thumb.className   = 'timebar-thumb' + (needsAp ? ' needs-approval' : '');
+
+    // Label
+    label.textContent = opt ? opt.label : '';
+    label.className   = 'timebar-selected' + (needsAp ? ' needs-approval' : '');
+
+    // Ticks
+    ticks.innerHTML = opts.map((o, i) => {
+      const x = total === 0 ? 50 : (i / total) * 100;
+      const isMajor = !o.exc && (freq === 'w' ? [4,8,13].includes(o.n) : [1,3,6].includes(o.n));
+      return `<div class="timebar-tick${isMajor?' major':''}" style="left:${x}%"></div>`;
+    }).join('');
+  }
+
+  function snapToNearest(clientX) {
+    const track  = E('timebarTrack');
+    const opts   = getDurOpts();
+    const rect   = track.getBoundingClientRect();
+    const pct    = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const idx    = Math.round(pct * (opts.length - 1));
+    selectedDur  = opts[Math.max(0, Math.min(opts.length-1, idx))].n;
+    renderTimebar(opts);
+    scheduleAutoRun();
+  }
+
+  // Mouse events
+  function initTimebarEvents() {
+    const track = E('timebarTrack');
+    const thumb = E('timebarThumb');
+
+    track.addEventListener('mousedown', e => { tbDragging = true; snapToNearest(e.clientX); e.preventDefault(); });
+    thumb.addEventListener('mousedown', e => { tbDragging = true; e.preventDefault(); });
+    document.addEventListener('mousemove', e => { if (tbDragging) snapToNearest(e.clientX); });
+    document.addEventListener('mouseup',   () => { tbDragging = false; });
+
+    // Touch
+    track.addEventListener('touchstart', e => { tbDragging = true; snapToNearest(e.touches[0].clientX); }, {passive:true});
+    thumb.addEventListener('touchstart', e => { tbDragging = true; }, {passive:true});
+    document.addEventListener('touchmove', e => { if (tbDragging) snapToNearest(e.touches[0].clientX); }, {passive:true});
+    document.addEventListener('touchend',  () => { tbDragging = false; });
+  }
+
+  function selectDur(n) {
+    selectedDur = n;
+    renderTimebar(getDurOpts());
+    recalcTotal(); // refresh total colour based on new duration
+    scheduleAutoRun();
   }
 
   function setFreq(f) {
     freq = f;
     E('btnM').classList.toggle('on', f==='m');
     E('btnW').classList.toggle('on', f==='w');
+    buildDurToggle();
+    recalcTotal(); // refresh colour
+    scheduleAutoRun();
   }
 
-  E('amt').addEventListener('keydown', e => { if (e.key==='Enter') run(); });
+  // Initialise duration time bar on load
+  selectedDur = 4; // default to 4 weeks
+  buildDurToggle();
+  initTimebarEvents();
 
   function run() {
-    const v     = parseFloat(E('amt').value);
-    const cur   = getCur();
+    const v      = recalcTotal();
+    const cur    = getCur();
     const minAmt = MIN_AMOUNTS[cur.code] || 250;
     const errEl  = E('amtErr');
-    const inpEl  = E('amt');
 
     if (!v || v < minAmt) {
-      inpEl.className = 'amt-input err';
       errEl.textContent = !v || v <= 0
-        ? 'Please enter a valid amount.'
-        : `Minimum invoice amount is ${cur.sym}${minAmt.toLocaleString()}.`;
+        ? 'Please enter at least one invoice amount.'
+        : `Minimum total is ${cur.sym}${minAmt.toLocaleString()}. Current total: ${fmt(v)}.`;
       errEl.className = 'input-error show';
-      inpEl.focus();
       return;
     }
 
-    inpEl.className = 'amt-input';
     errEl.className = 'input-error';
 
     const over5k = v > cur.threshold;
@@ -507,9 +749,10 @@
     E('sCurLabel').textContent = `${cur.code} · incl. all late fees`;
     E('sStr').textContent = fmt(v * 0.33);
     E('sTgt').textContent = fmt(v * 0.20);
-    E('sMin').textContent = fmt(v * 0.15);
 
-    E('out').innerHTML = renderTable(freq==='m' ? monthlyPlans(v,over5k,cur) : weeklyPlans(v,over5k,cur), freq, cur);
+    const allPlans = freq==='m' ? monthlyPlans(v,over5k,cur) : weeklyPlans(v,over5k,cur);
+    const plan = allPlans.find(p => p.n === selectedDur) || allPlans[0];
+    E('out').innerHTML = renderSinglePlan(plan, freq, cur);
   }
 
   function monthlyPlans(v, over5k, cur) {
@@ -532,12 +775,19 @@
 
   function weeklyPlans(v, over5k, cur) {
     return [
-      {n:4,  label:'4 weeks',  sub:'~1 month',  exc:false},
-      {n:8,  label:'8 weeks',  sub:'~2 months', exc:false},
-      {n:13, label:'13 weeks', sub:'~3 months', exc:false},
-      {n:18, label:'18 weeks', sub:'~4 months', exc:true },
-      {n:22, label:'22 weeks', sub:'~5 months', exc:true },
-      {n:26, label:'26 weeks', sub:'~6 months', exc:true },
+      {n:4,  label:'4 weeks',  sub:'~1 month',    exc:false},
+      {n:5,  label:'5 weeks',  sub:'',             exc:false},
+      {n:6,  label:'6 weeks',  sub:'~1.5 months',  exc:false},
+      {n:7,  label:'7 weeks',  sub:'',             exc:false},
+      {n:8,  label:'8 weeks',  sub:'~2 months',    exc:false},
+      {n:9,  label:'9 weeks',  sub:'',             exc:false},
+      {n:10, label:'10 weeks', sub:'~2.5 months',  exc:false},
+      {n:11, label:'11 weeks', sub:'',             exc:false},
+      {n:12, label:'12 weeks', sub:'~3 months',    exc:false},
+      {n:13, label:'13 weeks', sub:'~3 months',    exc:false},
+      {n:18, label:'18 weeks', sub:'~4 months',    exc:true },
+      {n:22, label:'22 weeks', sub:'~5 months',    exc:true },
+      {n:26, label:'26 weeks', sub:'~6 months',    exc:true },
     ].map(o => ({
       durLabel:o.label, durSub:o.sub, exc:o.exc, n:o.n, unit:'weekly',
       needsApproval: over5k||o.exc,
@@ -548,94 +798,103 @@
     }));
   }
 
-  function buildSchedule(p, firstAmt, remEa, uid) {
-    if (p.n === 1) return '';
+  function buildSchedule(uid, firstAmt, remEa, n, unit, proposal) {
+    if (n === 1) return '';
     let rows = '';
-    for (let i = 1; i <= p.n; i++) {
+    for (let i = 1; i <= n; i++) {
       const isFirst = i === 1;
-      const amt = isFirst ? firstAmt : remEa;
-      const label = isFirst ? '1st payment (target)' : `Payment ${i}`;
-      rows += `<div class="schedule-row ${isFirst?'first-row':''}">
-        <span class="s-num">${i}</span>
-        <span class="s-type">${label}</span>
-        <span class="s-amt">${fmt(amt)}</span>
+      const amt     = isFirst ? firstAmt : remEa;
+      const label   = isFirst ? `1st payment (${proposal})` : `Payment ${i}`;
+      rows += `<div class="sched-row ${isFirst ? 'first-sched-row' : ''}">
+        <span class="sr-num">${i}</span>
+        <span class="sr-type">${label}</span>
+        <span class="sr-amt">${fmt(amt)}</span>
       </div>`;
     }
-    return `
-      <div class="schedule-toggle" id="tog-${uid}" onclick="toggleSchedule('${uid}')">
-        <span>View payment schedule</span>
-        <span class="arrow">▼</span>
+    return `<div class="sched-header"><span>Payment Schedule</span><span>${n} ${unit} payments</span></div>${rows}`;
+  }
+
+  function toggleProposal(uid, proposal) {
+    const btn = E(`btn-${uid}-${proposal}`);
+    const sch = E(`sch-${uid}-${proposal}`);
+    const otherProposal = proposal === 'p1' ? 'p2' : 'p1';
+    const otherBtn = E(`btn-${uid}-${otherProposal}`);
+    const otherSch = E(`sch-${uid}-${otherProposal}`);
+
+    const isOpen = sch.classList.contains('open');
+
+    // Close the other one
+    if (otherBtn && otherSch) {
+      otherBtn.classList.remove('selected');
+      otherSch.classList.remove('open');
+    }
+
+    // Toggle this one
+    btn.classList.toggle('selected', !isOpen);
+    sch.classList.toggle('open', !isOpen);
+  }
+
+  function renderSinglePlan(p, freq, cur) {
+    const str33 = p.amount * 0.33;
+    const tgt20 = p.amount * 0.20;
+    const remN  = Math.max(p.n - 1, 1);
+    const uid   = 'single';
+
+    const rem33 = (p.amount - str33) / remN;
+    const rem20 = (p.amount - tgt20) / remN;
+
+    const durLabel = p.durLabel || `${p.n} ${freq==='w'?'weeks':'months'}`;
+    const durSub   = p.durSub ? ` · ${p.durSub}` : '';
+    const excNote  = p.exc
+      ? `<span style="font-size:11px;color:var(--amber);font-weight:600;margin-left:8px;">Exception · justify before offering</span>` : '';
+
+    const apBadge = p.needsApproval
+      ? `<span class="apb req"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3.5v3M6 8v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>${p.approvalNote}</span>`
+      : `<span class="apb ok"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>None required</span>`;
+
+    // Proposal 1 — 33%
+    const sched1 = p.n > 1 ? buildSchedule(uid, str33, rem33, p.n, p.unit, '1st proposal') : '';
+    const prop1  = `
+      <div class="proposal-btn p1" id="btn-${uid}-p1" onclick="toggleProposal('${uid}','p1')">
+        <div class="proposal-left">
+          <span class="proposal-label">1st Proposal</span>
+          <span class="proposal-amount">${fmt(str33)}</span>
+        </div>
+        <span class="proposal-pct">33% first payment · ${fmt(rem33)}/payment after</span>
+        <span class="proposal-toggle-icon">▼</span>
       </div>
-      <div class="schedule-body" id="sch-${uid}">${rows}</div>`;
-  }
+      <div class="proposal-schedule" id="sch-${uid}-p1">${sched1}</div>`;
 
-  function toggleSchedule(uid) {
-    const tog = E(`tog-${uid}`);
-    const bod = E(`sch-${uid}`);
-    const isOpen = bod.classList.contains('open');
-    bod.classList.toggle('open', !isOpen);
-    tog.classList.toggle('open', !isOpen);
-    tog.querySelector('span:first-child').textContent = isOpen ? 'View payment schedule' : 'Hide payment schedule';
-  }
-
-  function renderTable(plans, freq, cur) {
-    const title   = freq==='m' ? 'Monthly Payment Plans' : 'Weekly Payment Plans';
-    const ukBadge = freq==='w' ? '<span class="sec-badge">Prioritise for UK buyers</span>' : '';
-
-    const rows = plans.map((p, idx) => {
-      const str33 = p.amount*0.33, tgt20 = p.amount*0.20, min15 = p.amount*0.15;
-      const remN  = Math.max(p.n-1, 1);
-      const remEa = (p.amount - tgt20) / remN;
-      const uid   = `${freq}${idx}`;
-
-      const durSub  = p.durSub ? `<span class="d-pill-note">${p.durSub}</span>` : '';
-      const excNote = p.exc    ? `<span class="d-pill-note" style="color:var(--amber)">Justify before offering</span>` : '';
-
-      const schedHtml = buildSchedule(p, tgt20, remEa, uid);
-
-      const remCell = p.n === 1
-        ? `<span class="ap rem">${fmt(p.amount)}</span><span class="ap-sub">Full amount · single payment</span>`
-        : `<span class="ap rem">${fmt(remEa)}</span><span class="ap-sub">× ${remN} remaining ${p.unit} payments</span>${schedHtml}`;
-
-      const apBadge = p.needsApproval
-        ? `<span class="apb req"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3.5v3M6 8v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>${p.approvalNote}</span>`
-        : `<span class="apb ok"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>None required</span>`;
-
-      return `<tr class="${p.exc?'exc-row':''}">
-        <td><span class="d-pill ${p.exc?'exc':'std'}">${p.durLabel}</span>${durSub}${excNote}</td>
-        <td class="c" style="font-weight:600;font-variant-numeric:tabular-nums">${p.n}</td>
-        <td><span class="ap str">${fmt(str33)}</span></td>
-        <td><span class="ap tgt">${fmt(tgt20)}</span><span class="ap-sub">Standard start</span></td>
-        <td><span class="ap min">${fmt(min15)}</span><span class="ap-warn">Escalate first!</span></td>
-        <td>${remCell}</td>
-        <td>${apBadge}</td>
-      </tr>`;
-    }).join('');
+    // Proposal 2 — 20%
+    const sched2 = p.n > 1 ? buildSchedule(uid, tgt20, rem20, p.n, p.unit, '2nd proposal') : '';
+    const prop2  = `
+      <div class="proposal-btn p2" id="btn-${uid}-p2" onclick="toggleProposal('${uid}','p2')">
+        <div class="proposal-left">
+          <span class="proposal-label">2nd Proposal</span>
+          <span class="proposal-amount">${fmt(tgt20)}</span>
+        </div>
+        <span class="proposal-pct">20% first payment · ${fmt(rem20)}/payment after</span>
+        <span class="proposal-toggle-icon">▼</span>
+      </div>
+      <div class="proposal-schedule" id="sch-${uid}-p2">${sched2}</div>`;
 
     return `
-      <div class="sec-head"><h2>${title}</h2>${ukBadge}</div>
+      <div class="sec-head">
+        <h2>${durLabel}${durSub} · ${p.n} payment${p.n>1?'s':''}</h2>
+        ${excNote}
+        <div style="margin-left:auto;">${apBadge}</div>
+      </div>
       <div class="tbl-wrap">
-        <table>
-          <thead><tr>
-            <th>Duration</th>
-            <th class="c">Payments</th>
-            <th>Strong 1st &nbsp;·&nbsp; 33%</th>
-            <th>Target 1st &nbsp;·&nbsp; 20%</th>
-            <th>Min 1st &nbsp;·&nbsp; 15%</th>
-            <th>Remaining per Payment</th>
-            <th>Approval</th>
-          </tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
+        <div style="padding:20px 20px 16px;">
+          <div class="proposal-cell">${prop1}${prop2}</div>
+        </div>
         <div class="legend">
-          <div class="leg-item"><div class="leg-sw" style="background:var(--green-bg);border-color:var(--green-mid)"></div>Strong 33% · buyer can commit more upfront</div>
-          <div class="leg-item"><div class="leg-sw" style="background:var(--blue-bg);border-color:var(--blue-mid)"></div>Target 20% · standard starting point</div>
-          <div class="leg-item"><div class="leg-sw" style="background:var(--orange-bg);border-color:var(--orange-mid)"></div>Min 15% · hardship only, always escalate first</div>
-          <div class="leg-item"><div class="leg-sw" style="background:var(--amber-bg);border-color:#F5D580"></div>Amber row · exception plan, justify before offering</div>
-          <div class="leg-item"><div class="leg-sw" style="background:var(--danger-bg);border-color:#F5C5C5"></div>Red badge · tag Collections team in the support case — do not escalate</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--green-bg);border-color:var(--green-mid)"></div>1st Proposal (33%) · preferred starting point</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--blue-bg);border-color:var(--blue-mid)"></div>2nd Proposal (20%) · if buyer needs more flexibility</div>
+          <div class="leg-item"><div class="leg-sw" style="background:var(--danger-bg);border-color:#F5C5C5"></div>Red badge · tag Collections team in the support case, do not escalate</div>
         </div>
       </div>
-      <p class="footer-note">Schedule shows payments after the <strong>target 20% first payment</strong> · Always include all late fees · First payment within <strong>7 days</strong></p>`;
+      <p class="footer-note">Click a proposal to expand the full payment schedule · Always include all late fees · First payment within <strong>7 days</strong></p>`;
   }
 </script>
 </body>
