@@ -144,11 +144,13 @@
   .sf-alert.show { display: block; }
 
   /* STAT CARDS */
-  .stats { display: block; margin-bottom: 12px; }
-  .stat-card { background: var(--sys-bg2); border-radius: var(--r-inner); padding: 16px 22px; display: flex; align-items: center; gap: 20px; }
-  .stat-card .s-label { font-size: 12px; font-weight: 500; color: var(--ink4); margin-bottom: 4px; letter-spacing: 0.01em; }
-  .stat-card .s-val { font-size: 28px; font-weight: 700; letter-spacing: -0.8px; line-height: 1; color: var(--ink); }
-  .stat-card .s-sub { font-size: 12px; color: var(--ink4); margin-top: 3px; }
+  .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+  .stat-card { background: var(--sys-bg2); border-radius: var(--r-inner); padding: 16px 18px; }
+  .stat-card .s-label { font-size: 11px; font-weight: 500; color: var(--ink4); margin-bottom: 5px; letter-spacing: 0.01em; }
+  .stat-card .s-val { font-size: 22px; font-weight: 700; letter-spacing: -0.6px; line-height: 1; color: var(--ink); }
+  .stat-card .s-val.g { color: var(--green); }
+  .stat-card .s-val.b { color: var(--blue); }
+  .stat-card .s-sub { font-size: 11px; color: var(--ink4); margin-top: 4px; }
   .stat-card.dark { background: var(--ink); }
   .stat-card.dark .s-label { color: rgba(255,255,255,0.45); }
   .stat-card.dark .s-val   { color: rgba(255,255,255,0.95); }
@@ -340,6 +342,16 @@
       <div class="s-label">Invoice total</div>
       <div class="s-val" id="sTotal">—</div>
       <div class="s-sub" id="sCurLabel">incl. all late fees</div>
+    </div>
+    <div class="stat-card">
+      <div class="s-label">1st Proposal · 33%</div>
+      <div class="s-val g" id="sStr">—</div>
+      <div class="s-sub">Preferred starting point</div>
+    </div>
+    <div class="stat-card">
+      <div class="s-label">2nd Proposal · 20%</div>
+      <div class="s-val b" id="sTgt">—</div>
+      <div class="s-sub">More flexibility for buyer</div>
     </div>
   </div>
 
@@ -654,7 +666,7 @@
     if (over5k) { al.className='sf-alert show'; al.innerHTML=`⚠ <strong>Collections team involvement required</strong> · This plan total exceeds ${cur.sym}${cur.threshold.toLocaleString()}. Do not escalate — tag Collections team in the support case for approval.`; }
     else { al.className='sf-alert'; }
 
-    E('stats').style.display='block';
+    E('stats').style.display='grid';
     E('sTotal').textContent=fmt(v);
     E('sCurLabel').textContent=`${cur.code} · incl. all late fees`;
     E('sStr').textContent=fmt(v*0.33);
