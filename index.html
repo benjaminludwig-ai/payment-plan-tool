@@ -56,6 +56,9 @@
   .amt-sym { position: absolute; left: 13px; font-size: 17px; font-weight: 400; color: var(--ink4); pointer-events: none; }
   .line-amt { width: 100%; padding: 12px 12px 12px 30px; height: 48px; font-size: 20px; font-weight: 600; font-family: var(--font); color: var(--ink); background: transparent; border: none; outline: none; letter-spacing: -0.4px; }
   .line-amt::placeholder { color: var(--ink4); font-weight: 400; font-size: 17px; }
+  .inv-num-wrap { display: flex; align-items: center; border-left: 0.5px solid var(--sep); padding: 0 10px; min-width: 130px; background: transparent; }
+  .inv-num { font-size: 12px; font-weight: 500; font-family: var(--font); color: var(--ink); background: transparent; border: none; outline: none; width: 100%; }
+  .inv-num::placeholder { color: var(--ink4); }
   .remove-btn { flex-shrink: 0; width: 42px; background: transparent; border: none; border-left: 0.5px solid var(--sep); cursor: pointer; font-size: 18px; color: var(--ink4); display: flex; align-items: center; justify-content: center; transition: color .1s, background .1s; }
   .remove-btn:hover { color: var(--red); background: var(--red-bg); }
   .add-btn { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 500; font-family: var(--font); color: var(--blue); background: none; border: none; padding: 6px 0; cursor: pointer; transition: opacity .1s; }
@@ -209,6 +212,44 @@
   .rule.warn .rule-title { color: var(--red); }
   .rule-body { font-size: 12px; color: var(--ink3); line-height: 1.55; padding-left: 44px; margin-top: -2px; }
 
+
+  /* ── PRINT / PDF ── */
+  @media print {
+    @page { size: A4; margin: 16mm 18mm; }
+    body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .nav, .page-heading, .page-sub, .input-card, .sf-alert, .stats, .rules-panel,
+    .back-btn, .pdf-btn, .phint, .pcheck, .add-btn, .conf-date-sep,
+    .conf-date-today, .conf-date-input, .props-header { display: none !important; }
+    .page { padding: 0; max-width: 100%; }
+    .props-grid { display: block !important; }
+    .pcard { display: none !important; }
+    .pcard.open { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; cursor: default; }
+    .pdetail { display: block !important; }
+    .conf-date-row { background: #F8F8F8 !important; border-radius: 8px; padding: 12px 14px; }
+    .conf-date-derived { margin-top: 8px; }
+    .sched-body { break-inside: avoid; }
+    .sr { background: #F8F8F8 !important; }
+    .sr.first { background: #FFFFFF !important; }
+    .pdf-header { display: block !important; }
+    .tc-block { display: block !important; break-inside: avoid; }
+  }
+  .pdf-header { display: none; margin-bottom: 20px; }
+  .pdf-header-title { font-size: 22px; font-weight: 700; color: #1D1D1F; letter-spacing: -0.5px; margin-bottom: 2px; }
+  .pdf-header-sub { font-size: 13px; color: #6E6E73; }
+  .pdf-btn {
+    display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600;
+    font-family: var(--font); color: white; background: #1D1D1F; border: none;
+    border-radius: 8px; padding: 10px 18px; cursor: pointer; margin-top: 16px;
+    transition: opacity .15s;
+  }
+  .pdf-btn:hover { opacity: 0.82; }
+  .tc-block { display: none; margin-top: 22px; padding: 16px 18px; background: #F8F8F8; border-radius: 12px; }
+  .tc-block.show { display: block; }
+  .tc-title { font-size: 11px; font-weight: 700; color: #98989D; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .tc-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .tc-list li { font-size: 12px; color: #3D3D3F; line-height: 1.5; padding-left: 14px; position: relative; }
+  .tc-list li::before { content: '·'; position: absolute; left: 0; color: #98989D; font-weight: 700; }
+
   @media (max-width: 680px) {
     .stats { grid-template-columns: 1fr 1fr; }
     .props-grid { grid-template-columns: 1fr; }
@@ -328,7 +369,7 @@
     const div=document.createElement('div');
     div.className='invoice-line';
     const sym=(CUR_OPTS.find(o=>o.value===code)||CUR_OPTS[1]).sym;
-    div.innerHTML=`${buildCurSel(code)}<div class="amt-wrap"><span class="amt-sym">${sym}</span><input class="line-amt" type="number" placeholder="0.00" min="0" step="0.01" oninput="recalcTotal(true)"/></div><button class="remove-btn" onclick="removeLine(this)">×</button>`;
+    div.innerHTML=`${buildCurSel(code)}<div class="amt-wrap"><span class="amt-sym">${sym}</span><input class="line-amt" type="number" placeholder="0.00" min="0" step="0.01" oninput="recalcTotal(true)"/></div><div class="inv-num-wrap"><input class="inv-num" type="text" placeholder="Invoice #" maxlength="30"/></div><button class="remove-btn" onclick="removeLine(this)">×</button>`;
     const inp=div.querySelector('.line-amt');
     inp.addEventListener('keydown',function(e){
       if(e.key!=='Tab'||e.shiftKey) return;
@@ -443,6 +484,7 @@
       ${apBadge?`<div style="margin-top:10px">${apBadge}</div>`:''}
       <div class="phint">Tap to view full plan</div>
       <div class="pdetail">
+        <div class="pdf-header" id="pdf-hdr-${pid}"><div class="pdf-header-title">Payment Plan Proposal</div><div class="pdf-header-sub">Billie Collections · Generated ${fmtDate(new Date())}</div></div>
         <button class="back-btn" onclick="event.stopPropagation();closeCard('${pid}')">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L5 7l4 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Back to all proposals
@@ -452,6 +494,12 @@
         <div class="sched-hdr"><span class="sh-n">#</span><span class="sh-t">Payment</span><span class="sh-d">Due date</span><span class="sh-a">Amount</span></div>
         <div class="sched-body" id="sched-body-${pid}">${rows}</div>
         <div class="sched-note">Buyer has <strong>3 calendar days</strong> to accept · First payment due <strong>7 days after acceptance</strong></div>
+        ${buildInvoiceList()}
+        ${buildTCBlock(pid)}
+        <button class="pdf-btn" onclick="downloadPDF('${pid}', event)">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 10v2a1 1 0 001 1h8a1 1 0 001-1v-2" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download as PDF
+        </button>
       </div>
     </div>`;
   }
@@ -474,6 +522,73 @@
     const grid=document.getElementById('props-grid');
     E('pcard-'+pid).classList.remove('open');
     grid.classList.remove('has-open');
+  }
+
+
+
+  function buildInvoiceList(){
+    const lines=getInvoiceLines();
+    if(!lines.length) return '';
+    const rows=lines.map((l,i)=>`<div class="sr${i===0?' first':''}"><span class="sn">${i+1}</span><span class="st">${l.num||'—'}</span><span class="sd"></span><span class="sa">${CURRENCIES[l.cur].sym+l.amt.toLocaleString(CURRENCIES[l.cur].locale,{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>`).join('');
+    return `<div style="margin-top:16px;border-top:0.5px solid var(--sep);padding-top:14px;">
+      <div class="sched-hdr"><span class="sh-n">#</span><span class="sh-t">Invoice number</span><span class="sh-d"></span><span class="sh-a">Amount</span></div>
+      <div class="sched-body">${rows}</div>
+    </div>`;
+  }
+
+  /* ── PDF helpers ── */
+  function getInvoiceLines(){
+    const lines=[];
+    document.querySelectorAll('.invoice-line').forEach(line=>{
+      const num=line.querySelector('.inv-num')?.value||'';
+      const amt=parseFloat(line.querySelector('.line-amt')?.value)||0;
+      const cur=line.querySelector('.line-cur')?.value||'GBP';
+      if(amt>0) lines.push({num,amt,cur});
+    });
+    return lines;
+  }
+
+  function addWorkingDays(date, days){
+    const d=new Date(date);
+    let added=0;
+    while(added<days){
+      d.setDate(d.getDate()+1);
+      const dow=d.getDay();
+      if(dow!==0&&dow!==6) added++;
+    }
+    return d;
+  }
+
+  function buildTCBlock(pid){
+    const conf=getConfDate(pid);
+    const validUntil=addWorkingDays(conf,3);
+    const terms=[
+      `This proposal is valid until <strong>${fmtDate(validUntil)}</strong> (3 working days from confirmation)`,
+      'Only one active payment plan is permitted per account at any time',
+      'All instalments must be paid on time and in full',
+      'Missed instalments will result in immediate termination of the plan',
+      'Upon termination, the full remaining balance becomes due immediately and the collections process will resume',
+      'Late fees are not waived and remain part of the total outstanding balance',
+      'A terminated plan may result in future payment plan requests being declined',
+    ];
+    return `<div class="tc-block show" id="tc-${pid}">
+      <div class="tc-title">Terms &amp; Conditions</div>
+      <ul class="tc-list">${terms.map(t=>`<li>${t}</li>`).join('')}</ul>
+    </div>`;
+  }
+
+  function downloadPDF(pid, event){
+    event.stopPropagation();
+    // Show TC and header before printing
+    const tc=E('tc-'+pid);
+    const hdr=E('pdf-hdr-'+pid);
+    if(tc) tc.classList.add('show');
+    if(hdr) hdr.style.display='block';
+    setTimeout(()=>{
+      window.print();
+      if(tc) tc.classList.remove('show');
+      if(hdr) hdr.style.display='none';
+    }, 200);
   }
 
   /* ── Main run ── */
