@@ -158,7 +158,8 @@
   .conf-date-today { font-size: 13px; font-weight: 600; color: var(--green); }
   .conf-date-sep { font-size: 12px; color: var(--ink4); }
   .conf-date-input { font-size: 13px; font-weight: 500; font-family: var(--font); color: var(--ink); background: var(--card); border: none; border-radius: 8px; padding: 6px 10px; outline: none; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  .conf-date-input:focus { box-shadow: 0 0 0 3px var(--blue-ring); }
+  .conf-date-input-wrap { display: inline; }
+  .conf-date-chosen { font-size: 13px; font-weight: 600; color: var(--green); background: var(--green-bg); border-radius: var(--rp); padding: 4px 12px; }
   .conf-date-derived { display: flex; gap: 16px; margin-top: 10px; flex-wrap: wrap; }
   .conf-date-stat { display: flex; flex-direction: column; gap: 2px; }
   .conf-date-stat .cds-lbl { font-size: 11px; color: var(--ink4); font-weight: 400; }
@@ -372,12 +373,27 @@
     div.className='invoice-line';
     const sym=(CUR_OPTS.find(o=>o.value===code)||CUR_OPTS[1]).sym;
     div.innerHTML=`${buildCurSel(code)}<div class="amt-wrap"><span class="amt-sym">${sym}</span><input class="line-amt" type="number" placeholder="0.00" min="0" step="0.01" oninput="recalcTotal(true)"/></div><div class="inv-num-wrap"><input class="inv-num" type="text" placeholder="Invoice #" maxlength="30"/></div><button class="remove-btn" onclick="removeLine(this)">×</button>`;
-    const inp=div.querySelector('.line-amt');
-    inp.addEventListener('keydown',function(e){
-      if(e.key!=='Tab'||e.shiftKey) return;
-      const all=Array.from(document.querySelectorAll('.line-amt'));
-      if(all.indexOf(this)===all.length-1){ e.preventDefault(); addLine(); document.querySelectorAll('.line-amt')[document.querySelectorAll('.line-amt').length-1].focus(); }
+
+    // Tab from amount → move to invoice # in same line
+    const amtInp = div.querySelector('.line-amt');
+    amtInp.addEventListener('keydown', function(e){
+      if(e.key !== 'Tab' || e.shiftKey) return;
+      const invNum = div.querySelector('.inv-num');
+      if(invNum){ e.preventDefault(); invNum.focus(); }
     });
+
+    // Tab from invoice # → add new line and focus its amount
+    const numInp = div.querySelector('.inv-num');
+    numInp.addEventListener('keydown', function(e){
+      if(e.key !== 'Tab' || e.shiftKey) return;
+      const allNums = Array.from(document.querySelectorAll('.inv-num'));
+      if(allNums.indexOf(this) === allNums.length - 1){
+        e.preventDefault();
+        addLine();
+        document.querySelectorAll('.line-amt')[document.querySelectorAll('.line-amt').length - 1].focus();
+      }
+    });
+
     return div;
   }
   function addLine(){ const s=document.querySelector('.line-cur'); E('invoiceLines').appendChild(makeLine(s?s.value:'GBP')); }
@@ -437,9 +453,10 @@
     return `<div class="conf-date-row">
       <span class="conf-date-label">Payment Plan Confirmation Date</span>
       <div class="conf-date-fields">
-        <span class="conf-date-today">Today · ${fmtDate(conf)}</span>
-        <span class="conf-date-sep">or choose date</span>
-        <input type="date" id="conf-${pid}" class="conf-date-input" value="${today}" min="${today}" onchange="refreshCard('${pid}')"/>
+        <div class="conf-date-input-wrap" id="conf-wrap-${pid}">
+          <input type="date" id="conf-${pid}" class="conf-date-input" value="${today}" min="${today}" onchange="onConfDateChange('${pid}', this)"/>
+        </div>
+        <span class="conf-date-chosen" id="conf-chosen-${pid}" style="display:none;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;" onclick="editConfDate('${pid}')"></span>
       </div>
       <div class="conf-date-derived" id="derived-${pid}">
         <div class="conf-date-stat"><span class="cds-lbl">Must accept by</span><span class="cds-val amber" id="accept-${pid}">${fmtDate(accept)}</span></div>
@@ -448,6 +465,30 @@
     </div>`;
   }
 
+
+  function onConfDateChange(pid, inp) {
+    refreshCard(pid);
+    // Hide the input, show the chosen date as a badge
+    const wrap = E('conf-wrap-' + pid);
+    const chosen = E('conf-chosen-' + pid);
+    if (wrap && chosen) {
+      const d = new Date(inp.value + 'T00:00:00');
+      chosen.textContent = fmtDate(d);
+      wrap.style.display = 'none';
+      chosen.style.display = 'inline';
+    }
+  }
+
+  function editConfDate(pid) {
+    const wrap = E('conf-wrap-' + pid);
+    const chosen = E('conf-chosen-' + pid);
+    if (wrap && chosen) {
+      wrap.style.display = 'inline';
+      chosen.style.display = 'none';
+      const inp = E('conf-' + pid);
+      if (inp) inp.focus();
+    }
+  }
   function refreshCard(pid){
     const conf=getConfDate(pid);
     const accept=addDays(conf,3);
@@ -486,7 +527,7 @@
       ${apBadge?`<div style="margin-top:10px">${apBadge}</div>`:''}
       <div class="phint">Tap to view full plan</div>
       <div class="pdetail">
-        <div class="pdf-header" id="pdf-hdr-${pid}"><div class="pdf-header-title">Payment Plan Proposal</div><div class="pdf-header-sub">Billie Collections · Generated ${fmtDate(new Date())}</div></div>
+        <div class="pdf-header" id="pdf-hdr-${pid}"><div class="pdf-header-title">Payment Plan Proposal</div><div class="pdf-header-sub">Billie GmbH · Generated ${fmtDate(new Date())}</div></div>
         <button class="back-btn" onclick="event.stopPropagation();closeCard('${pid}')">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L5 7l4 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Back to all proposals
@@ -712,7 +753,6 @@
   <!-- HERO -->
   <div class="hero">
     <div>
-      <div class="hero-badge">${propLabel}</div>
       <div class="hero-amount">${cur.sym+first.toLocaleString(cur.locale,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
       <div class="hero-sub">First instalment · ${Math.round(first/total*100)}% of total outstanding</div>
     </div>
@@ -720,7 +760,6 @@
       <div class="hero-meta-row"><span class="hero-meta-key">Total outstanding</span><span class="hero-meta-val">${cur.sym+total.toLocaleString(cur.locale,{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>
       <div class="hero-meta-row"><span class="hero-meta-key">Frequency</span><span class="hero-meta-val">${unit==='weekly'?'Weekly':'Monthly'}</span></div>
       <div class="hero-meta-row"><span class="hero-meta-key">Duration</span><span class="hero-meta-val">${n} ${unit==='weekly'?'weeks':'months'}</span></div>
-      <div class="hero-meta-row"><span class="hero-meta-key">Remaining instalments</span><span class="hero-meta-val">${cur.sym+rem.toLocaleString(cur.locale,{minimumFractionDigits:2,maximumFractionDigits:2})} × ${Math.max(n-1,1)}</span></div>
     </div>
   </div>
 
@@ -754,8 +793,7 @@
 
   <!-- FOOTER -->
   <div class="footer">
-    <span class="footer-l">Billie · Collections</span>
-    <span class="footer-r">Confidential · For internal and buyer use only</span>
+    <span class="footer-l">Billie GmbH</span>
   </div>
 
 </div>
