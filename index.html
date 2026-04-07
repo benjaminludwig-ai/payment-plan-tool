@@ -4,391 +4,342 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Payment Plan Calculator · Billie</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
   :root {
-    --black:      #000000;
-    --off-black:  #0D0D0D;
-    --ink:        #1A1A1A;
-    --ink-soft:   #2E2E2E;
-    --grey-5:     #6E6E6E;
-    --grey-4:     #9A9A9A;
-    --grey-3:     #CECECE;
-    --grey-2:     #E8E8E8;
-    --grey-1:     #F4F4F2;
-    --white:      #FFFFFF;
-    --green:      #167A40;
-    --green-bg:   #EDFAF3;
-    --green-mid:  #A8DFC0;
-    --blue:       #2B52C8;
-    --blue-bg:    #EEF1FC;
-    --blue-mid:   #A0B4EE;
-    --amber:      #D97706;
-    --amber-bg:   #FEF3C7;
-    --danger:     #C02020;
-    --danger-bg:  #FFF0F0;
-    --ok:         #167A40;
-    --ok-bg:      #EDFAF3;
-    --font: 'Inter', sans-serif;
-    --r: 10px; --r-sm: 6px;
+    --sys-bg:        #F5F5F7;
+    --sys-bg2:       #FFFFFF;
+    --sys-bg3:       #F2F2F2;
+    --sys-sep:       rgba(0,0,0,0.10);
+    --sys-sep-light: rgba(0,0,0,0.06);
+    --ink:           #1D1D1F;
+    --ink2:          #3D3D3F;
+    --ink3:          #6E6E73;
+    --ink4:          #98989D;
+    --green:         #188038;
+    --green-bg:      #EAF4EE;
+    --green-border:  rgba(24,128,56,0.25);
+    --green-ring:    rgba(24,128,56,0.14);
+    --blue:          #0071E3;
+    --blue-bg:       #E8F0FD;
+    --blue-border:   rgba(0,113,227,0.25);
+    --blue-ring:     rgba(0,113,227,0.12);
+    --purple:        #6E3FD5;
+    --purple-bg:     #F0EBFC;
+    --purple-border: rgba(110,63,213,0.25);
+    --purple-ring:   rgba(110,63,213,0.12);
+    --red:           #C2290A;
+    --red-bg:        #FDF0EE;
+    --red-border:    rgba(194,41,10,0.22);
+    --amber:         #995F00;
+    --amber-bg:      #FDF5E6;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    --mono: "SF Mono", "Fira Code", monospace;
+    --r-card: 18px;
+    --r-inner: 12px;
+    --r-pill: 100px;
+    --r-btn: 8px;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font); background: var(--grey-1); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font); background: var(--sys-bg); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
-  /* ── TOPBAR ── */
-  .topbar { background: var(--black); height: 52px; display: flex; align-items: center; padding: 0 32px; position: sticky; top: 0; z-index: 100; }
+  /* NAV */
+  .nav { background: rgba(245,245,247,0.88); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 0.5px solid var(--sys-sep); height: 48px; display: flex; align-items: center; padding: 0 28px; position: sticky; top: 0; z-index: 100; }
+  .nav-title { font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: -0.1px; }
+  .nav-sub { font-size: 11px; color: var(--ink4); margin-left: 8px; }
 
-  /* ── HERO ── */
-  .hero { background: var(--grey-1); padding: 36px 40px 4px; }
-  .hero h1 { font-size: 26px; font-weight: 700; color: var(--black); letter-spacing: -0.6px; line-height: 1.15; margin-bottom: 5px; }
-  .hero p  { font-size: 14px; color: var(--grey-5); max-width: 520px; }
+  /* PAGE */
+  .page { max-width: 920px; margin: 0 auto; padding: 28px 24px 80px; }
+  .page-heading { font-size: 32px; font-weight: 700; color: var(--ink); letter-spacing: -0.8px; margin-bottom: 4px; }
+  .page-sub { font-size: 15px; color: var(--ink3); margin-bottom: 28px; font-weight: 400; }
 
-  /* ── MAIN ── */
-  .main { max-width: 1120px; margin: 0 auto; padding: 28px 32px 64px; }
+  /* CARD */
+  .sf-card { background: var(--sys-bg2); border-radius: var(--r-card); overflow: hidden; margin-bottom: 12px; }
+  .sf-card-inner { padding: 20px 22px; }
+  .sf-sep { height: 0.5px; background: var(--sys-sep-light); margin: 0; }
 
-  /* ── INPUT PANEL ── */
-  .input-panel {
-    background: var(--white); border: 1px solid var(--grey-2); border-radius: var(--r);
-    padding: 24px 28px 22px; margin-bottom: 20px;
-    display: grid; grid-template-columns: 1fr 160px 160px auto; gap: 16px; align-items: end;
-  }
-  .field-label { font-size: 11px; font-weight: 700; color: var(--grey-5); letter-spacing: 0.1px; margin-bottom: 8px; display: block; }
-  .amt-row { display: flex; gap: 0; }
-  .currency-select {
-    padding: 0 10px; height: 52px; font-size: 13px; font-weight: 700; font-family: var(--font);
-    color: var(--black); background: var(--grey-2); border: 1.5px solid var(--grey-2); border-right: none;
-    border-radius: var(--r-sm) 0 0 var(--r-sm); outline: none; cursor: pointer; min-width: 70px;
+  /* SECTION LABEL */
+  .sf-section-label { font-size: 11px; font-weight: 600; color: var(--ink4); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px; display: block; }
+
+  /* MIN HINT */
+  .sf-min-hint { font-size: 12px; color: var(--red); font-weight: 500; margin-bottom: 12px; display: block; }
+
+  /* INVOICE LINES */
+  .invoice-line { display: flex; align-items: stretch; border-radius: var(--r-inner); overflow: hidden; background: var(--sys-bg3); margin-bottom: 6px; }
+  .invoice-line:focus-within { outline: none; box-shadow: 0 0 0 3px rgba(0,113,227,0.25); border-radius: var(--r-inner); }
+  .line-cur {
+    padding: 0 10px; font-size: 13px; font-weight: 600; font-family: var(--font);
+    color: var(--ink); background: transparent; border: none; border-right: 0.5px solid var(--sys-sep);
+    outline: none; cursor: pointer; min-width: 68px;
     appearance: none; -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236E6E6E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px;
-    transition: background-color .15s;
+    background-image: url("data:image/svg+xml,%3Csvg width='8' height='5' viewBox='0 0 8 5' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%2398989D' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center; padding-right: 22px;
   }
-  .currency-select:focus { background-color: var(--grey-3); }
-  .amt-wrap { position: relative; flex: 1; }
-  .amt-sym { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 18px; font-weight: 600; color: var(--grey-3); pointer-events: none; }
-  .amt-input {
-    width: 100%; padding: 13px 16px 13px 30px; height: 52px;
-    font-size: 22px; font-weight: 700; font-family: var(--font); color: var(--black);
-    background: var(--grey-1); border: 1.5px solid var(--grey-2);
-    border-radius: 0 var(--r-sm) var(--r-sm) 0; outline: none; letter-spacing: -0.5px;
-    transition: border-color .15s, background .15s;
+  .amt-wrap { position: relative; flex: 1; display: flex; align-items: center; }
+  .amt-sym { position: absolute; left: 13px; font-size: 17px; font-weight: 400; color: var(--ink4); pointer-events: none; }
+  .line-amt {
+    width: 100%; padding: 13px 12px 13px 30px; height: 48px;
+    font-size: 20px; font-weight: 600; font-family: var(--font); color: var(--ink);
+    background: transparent; border: none; outline: none; letter-spacing: -0.4px;
   }
-  .amt-input:focus { border-color: var(--black); background: var(--white); }
-  .amt-input::placeholder { color: var(--grey-3); font-weight: 400; font-size: 18px; }
-  .amt-input.err { border-color: var(--danger); background: var(--danger-bg); }
-  .seg { display: flex; background: var(--grey-1); border: 1.5px solid var(--grey-2); border-radius: var(--r-sm); padding: 3px; gap: 3px; height: 52px; }
-  .seg button { flex: 1; padding: 8px 10px; font-size: 13px; font-weight: 600; font-family: var(--font); border: none; border-radius: 5px; cursor: pointer; background: transparent; color: var(--grey-5); transition: background .15s, color .15s; white-space: nowrap; }
-  .seg button.on { background: var(--black); color: var(--white); box-shadow: 0 1px 4px rgba(0,0,0,.18); }
-  .generate-btn {
-    padding: 0 26px; height: 52px; background: var(--black); color: var(--white);
-    border: none; border-radius: var(--r-sm); font-size: 14px; font-weight: 700;
-    font-family: var(--font); cursor: pointer; white-space: nowrap;
-    transition: background .15s, transform .1s; display: flex; align-items: center; gap: 8px;
+  .line-amt::placeholder { color: var(--ink4); font-weight: 400; font-size: 18px; }
+  .remove-btn {
+    flex-shrink: 0; width: 42px; background: transparent; border: none;
+    border-left: 0.5px solid var(--sys-sep); cursor: pointer;
+    font-size: 18px; color: var(--ink4); display: flex; align-items: center; justify-content: center;
+    transition: color .1s, background .1s;
   }
-  .generate-btn:hover { background: var(--ink-soft); transform: translateY(-1px); }
-  .generate-btn:active { transform: none; }
-  .generate-btn svg { transition: transform .15s; }
-  .generate-btn:hover svg { transform: translateX(3px); }
-  .input-error { font-size: 11px; color: var(--danger); font-weight: 600; margin-top: 5px; display: none; }
-  .input-error.show { display: block; }
-  /* Red hint text */
-  .field-hint { font-size: 11px; color: var(--danger); font-weight: 600; margin-top: 5px; }
+  .remove-btn:hover { color: var(--red); background: var(--red-bg); }
 
-  /* ── RULES PANEL ── */
-  .rules-panel { margin-bottom: 20px; }
-  .rules-section-label { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 14px; text-align: center; letter-spacing: 0.1px; }
-  .rules-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .rule-card { background: var(--white); border: 1px solid var(--grey-2); border-radius: 14px; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px; transition: box-shadow .15s; }
-  .rule-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
-  .rule-card.is-warn { background: #FFFAFA; border-color: #F5DADA; }
-  .rule-card-top { display: flex; align-items: center; gap: 10px; }
-  .rule-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
-  .rule-icon.neutral { background: var(--grey-1); }
-  .rule-icon.warn    { background: #FDECEA; }
-  .rule-card-title { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.25; }
-  .rule-card.is-warn .rule-card-title { color: var(--danger); }
-  .rule-card-body { font-size: 12px; color: var(--grey-5); line-height: 1.5; padding-left: 46px; margin-top: -4px; }
-
-  /* ── ALERT ── */
-  .alert { display: none; background: var(--danger-bg); border: 1px solid #F5C5C5; border-left: 4px solid var(--danger); border-radius: var(--r-sm); padding: 13px 16px; margin-bottom: 20px; font-size: 13px; color: var(--danger); font-weight: 600; }
-  .alert.show { display: block; }
-
-  /* ── STAT CARDS — now 3 cards (no min) ── */
-  .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 24px; }
-  .stat-card { background: var(--white); border: 1px solid var(--grey-2); border-radius: var(--r); padding: 18px 20px 16px; }
-  .stat-card .s-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1px; color: var(--grey-4); margin-bottom: 8px; }
-  .stat-card .s-val   { font-size: 22px; font-weight: 800; letter-spacing: -0.6px; line-height: 1; color: var(--black); }
-  .stat-card .s-val.green-c { color: var(--green); }
-  .stat-card .s-val.blue-c  { color: var(--blue); }
-  .stat-card .s-sub { font-size: 11px; color: var(--grey-4); margin-top: 5px; }
-  .stat-card.accent-card { background: var(--black); border-color: var(--black); }
-  .stat-card.accent-card .s-label { color: rgba(255,255,255,0.4); }
-  .stat-card.accent-card .s-val   { color: var(--white); }
-  .stat-card.accent-card .s-sub   { color: rgba(255,255,255,0.3); }
-
-  /* ── SECTION HEAD ── */
-  .sec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .sec-head h2 { font-size: 12px; font-weight: 700; color: var(--black); letter-spacing: 0.1px; }
-  .sec-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.1px; padding: 3px 8px; border-radius: 20px; background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-mid); }
-
-  /* ── TABLE ── */
-  .tbl-wrap { background: var(--white); border: 1px solid var(--grey-2); border-radius: var(--r); overflow: hidden; margin-bottom: 28px; }
-  table { width: 100%; border-collapse: collapse; }
-  thead th { background: var(--off-black); color: rgba(255,255,255,0.55); font-size: 11px; font-weight: 600; letter-spacing: 0.1px; padding: 11px 16px; text-align: left; white-space: nowrap; }
-  thead th.c { text-align: center; }
-  tbody tr { border-bottom: 1px solid var(--grey-1); transition: background .1s; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: #FAFAF8; }
-  tbody tr.exc-row { background: #FDFBF5; }
-  tbody tr.exc-row:hover { background: #F8F3E8; }
-  td { padding: 14px 16px; font-size: 13px; color: var(--ink); vertical-align: middle; }
-  td.c { text-align: center; }
-
-  /* Duration pill */
-  .d-pill { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-  .d-pill.std { background: var(--grey-1); color: #4A4A4A; border: 1px solid var(--grey-2); }
-  .d-pill.exc { background: var(--amber-bg); color: var(--amber); border: 1px solid #F5D580; }
-  .d-pill-note { font-size: 10px; color: var(--grey-4); display: block; margin-top: 3px; }
-
-  /* ── PROPOSAL SELECTOR — replaces old ap chips ── */
-  .proposal-cell { display: flex; flex-direction: column; gap: 8px; }
-
-  .proposal-btn {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 14px; border-radius: var(--r-sm); cursor: pointer;
-    border: 1.5px solid transparent; transition: all .15s; user-select: none;
-    gap: 10px;
-  }
-  .proposal-btn.p1 { background: var(--green-bg); border-color: var(--green-mid); }
-  .proposal-btn.p1:hover { border-color: var(--green); }
-  .proposal-btn.p1.selected { border-color: var(--green); box-shadow: 0 0 0 2px rgba(22,122,64,0.15); }
-  .proposal-btn.p2 { background: var(--blue-bg); border-color: var(--blue-mid); }
-  .proposal-btn.p2:hover { border-color: var(--blue); }
-  .proposal-btn.p2.selected { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(43,82,200,0.15); }
-
-  .proposal-left { display: flex; flex-direction: column; gap: 2px; }
-  .proposal-label { font-size: 10px; font-weight: 700; letter-spacing: 0.3px; }
-  .proposal-btn.p1 .proposal-label { color: var(--green); }
-  .proposal-btn.p2 .proposal-label { color: var(--blue); }
-  .proposal-amount { font-size: 15px; font-weight: 800; letter-spacing: -0.3px; font-variant-numeric: tabular-nums; }
-  .proposal-btn.p1 .proposal-amount { color: var(--green); }
-  .proposal-btn.p2 .proposal-amount { color: var(--blue); }
-  .proposal-pct { font-size: 10px; font-weight: 600; }
-  .proposal-btn.p1 .proposal-pct { color: rgba(22,122,64,0.6); }
-  .proposal-btn.p2 .proposal-pct { color: rgba(43,82,200,0.6); }
-
-  .proposal-toggle-icon { flex-shrink: 0; font-size: 11px; transition: transform .2s; }
-  .proposal-btn.selected .proposal-toggle-icon { transform: rotate(180deg); }
-
-  /* Expandable schedule inside the proposal */
-  .proposal-schedule {
-    display: none; overflow: hidden;
-    background: var(--white); border: 1px solid var(--grey-2);
-    border-radius: var(--r-sm); margin-top: -2px;
-  }
-  .proposal-schedule.open { display: block; }
-  .sched-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 7px 12px; background: var(--grey-1); border-bottom: 1px solid var(--grey-2);
-    font-size: 10px; font-weight: 700; color: var(--grey-4); letter-spacing: 0.3px;
-  }
-  .sched-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 12px; border-bottom: 1px solid var(--grey-2); font-size: 12px; }
-  .sched-row:last-child { border-bottom: none; }
-  .sched-row .sr-num  { color: var(--grey-4); font-weight: 600; width: 28px; }
-  .sched-row .sr-type { color: var(--grey-5); flex: 1; padding: 0 8px; }
-  .sched-row .sr-amt  { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); }
-  .sched-row.first-sched-row { background: #FAFFFE; }
-  .sched-row.first-sched-row .sr-amt { color: var(--green); }
-
-  /* Approval badge */
-  .apb { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-  .apb.ok  { background: var(--ok-bg);     color: var(--ok); }
-  .apb.req { background: var(--danger-bg); color: var(--danger); }
-
-  /* ── LEGEND ── */
-  .legend { display: flex; flex-wrap: wrap; gap: 10px 22px; padding: 13px 18px; background: var(--grey-1); border-top: 1px solid var(--grey-2); }
-  .leg-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--grey-5); }
-  .leg-sw { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.08); }
-
-  /* ── EMPTY ── */
-  .empty { background: var(--white); border: 1px solid var(--grey-2); border-radius: var(--r); padding: 60px 32px; text-align: center; }
-  .empty-icon { width: 48px; height: 48px; background: var(--grey-1); border: 1px solid var(--grey-2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 14px; }
-  .empty h3 { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
-  .empty p  { font-size: 13px; color: var(--grey-5); max-width: 360px; margin: 0 auto; }
-
-  .invoice-line { display: flex; align-items: center; gap: 6px; }
   .add-line-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 12px; font-weight: 600; font-family: var(--font);
-    color: var(--blue); background: var(--blue-bg);
-    border: 1px solid var(--blue-mid); border-radius: var(--r-sm);
-    padding: 7px 14px; cursor: pointer; transition: background .12s;
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 13px; font-weight: 500; font-family: var(--font);
+    color: var(--blue); background: none; border: none;
+    padding: 6px 0; cursor: pointer; transition: opacity .1s;
   }
-  .add-line-btn:hover { background: #DDE6FA; }
+  .add-line-btn:hover { opacity: 0.72; }
 
-  /* Duration time bar */
-  .timebar-wrap {
-    position: relative;
-    user-select: none;
-  }
-  .timebar-track {
-    position: relative;
-    height: 6px;
-    border-radius: 3px;
-    background: var(--grey-2);
-    margin: 18px 0 24px;
-    cursor: pointer;
-  }
-  .timebar-fill {
-    position: absolute; left: 0; top: 0; height: 100%;
-    border-radius: 3px;
-    background: var(--green);
-    pointer-events: none;
-    transition: width .15s, background .2s;
-  }
-  .timebar-fill.needs-approval { background: var(--danger); }
-  .timebar-thumb {
-    position: absolute; top: 50%;
-    width: 18px; height: 18px;
-    border-radius: 50%;
-    background: var(--white);
-    border: 2.5px solid var(--green);
-    transform: translate(-50%, -50%);
-    box-shadow: 0 1px 6px rgba(0,0,0,0.18);
-    cursor: grab; transition: border-color .2s, transform .1s;
-    z-index: 2;
-  }
-  .timebar-thumb.needs-approval { border-color: var(--danger); }
-  .timebar-thumb:active { cursor: grabbing; transform: translate(-50%,-50%) scale(1.15); }
-  .timebar-ticks {
-    position: absolute; top: 0; left: 0; right: 0; height: 6px;
-    pointer-events: none;
-  }
-  .timebar-tick {
-    position: absolute; top: -4px;
-    width: 2px; height: 14px;
-    border-radius: 1px;
-    background: var(--grey-3);
-    transform: translateX(-50%);
-  }
-  .timebar-tick.major { background: var(--grey-4); height: 16px; top: -5px; }
-  .timebar-labels {
-    display: flex; justify-content: space-between;
-    position: absolute; bottom: -22px; left: 0; right: 0;
-  }
-  .timebar-label {
-    position: absolute;
-    font-size: 10px; font-weight: 600; color: var(--grey-4);
-    transform: translateX(-50%);
-    white-space: nowrap;
-  }
-  .timebar-label.active { color: var(--ink); font-weight: 700; }
-  .timebar-label.exc-label { color: var(--amber); }
-  .timebar-selected {
-    text-align: center;
-    font-size: 13px; font-weight: 700; color: var(--green);
-    margin-bottom: 4px; letter-spacing: -0.2px;
-    min-height: 20px; transition: color .2s;
-  }
-  .timebar-selected.needs-approval { color: var(--danger); }
-  .footer-note { font-size: 11px; color: var(--grey-4); text-align: center; margin-top: 14px; line-height: 1.6; }
+  .input-error { font-size: 12px; color: var(--red); font-weight: 500; margin-top: 6px; display: none; }
+  .input-error.show { display: block; }
 
-  @media (max-width: 840px) {
-    .input-panel { grid-template-columns: 1fr 1fr; }
-    .stats        { grid-template-columns: 1fr 1fr; }
-    .rules-grid   { grid-template-columns: 1fr 1fr; }
+  /* TOTAL ROW */
+  .total-row {
+    display: none; margin-top: 12px; padding: 13px 16px;
+    border-radius: var(--r-inner); align-items: center; justify-content: space-between;
+    background: var(--sys-bg3); transition: background .2s;
   }
-  @media (max-width: 560px) {
-    .input-panel { grid-template-columns: 1fr; }
-    .rules-grid  { grid-template-columns: 1fr; }
+  .total-row.show { display: flex; }
+  .total-label { font-size: 12px; font-weight: 500; color: var(--ink3); }
+  .total-val { font-size: 24px; font-weight: 700; letter-spacing: -0.6px; color: var(--ink); transition: color .2s; }
+
+  .late-fee-note { font-size: 11px; color: var(--ink4); margin-top: 6px; }
+
+  /* DIVIDER */
+  .ctrl-sep { height: 0.5px; background: var(--sys-sep-light); margin: 20px 0; }
+
+  /* SEGMENTED CONTROL — Apple style */
+  .sf-seg { display: inline-flex; background: var(--sys-bg3); border-radius: 9px; padding: 2px; gap: 0; }
+  .sf-seg button {
+    flex: 1; padding: 7px 18px; font-size: 14px; font-weight: 500; font-family: var(--font);
+    border: none; border-radius: 7px; cursor: pointer; background: transparent;
+    color: var(--ink3); transition: background .15s, color .15s, box-shadow .15s;
+    white-space: nowrap; letter-spacing: -0.1px;
+  }
+  .sf-seg button.on { background: var(--sys-bg2); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 0.5px 1px rgba(0,0,0,0.08); }
+
+  /* TIMEBAR */
+  .timebar-wrap { position: relative; user-select: none; }
+  .timebar-track { position: relative; height: 4px; border-radius: 2px; background: var(--sys-sep); margin: 22px 0 24px; cursor: pointer; }
+  .timebar-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 2px; background: var(--green); pointer-events: none; transition: width .14s, background .18s; }
+  .timebar-fill.na { background: var(--red); }
+  .timebar-thumb { position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%; background: var(--sys-bg2); border: none; transform: translate(-50%, -50%); box-shadow: 0 2px 10px rgba(0,0,0,0.18), 0 0.5px 2px rgba(0,0,0,0.1); cursor: grab; transition: box-shadow .15s, transform .1s; z-index: 2; }
+  .timebar-thumb:active { cursor: grabbing; transform: translate(-50%,-50%) scale(1.12); box-shadow: 0 4px 16px rgba(0,0,0,0.22), 0 1px 4px rgba(0,0,0,0.1); }
+  .timebar-ticks { position: absolute; top: 0; left: 0; right: 0; height: 4px; pointer-events: none; }
+  .timebar-tick { position: absolute; top: -3px; width: 1px; height: 10px; border-radius: 1px; background: rgba(0,0,0,0.12); transform: translateX(-50%); }
+  .timebar-tick.major { height: 12px; top: -4px; background: rgba(0,0,0,0.2); }
+  .timebar-selected { text-align: center; font-size: 14px; font-weight: 600; color: var(--green); margin-bottom: 2px; letter-spacing: -0.2px; min-height: 20px; transition: color .18s; }
+  .timebar-selected.na { color: var(--red); }
+
+  /* ALERT */
+  .sf-alert { display: none; background: var(--red-bg); border-radius: var(--r-inner); border-left: 3px solid var(--red); padding: 12px 16px; margin-bottom: 12px; font-size: 13px; color: var(--red); font-weight: 500; line-height: 1.5; }
+  .sf-alert.show { display: block; }
+
+  /* STAT CARDS */
+  .stats { display: block; margin-bottom: 12px; }
+  .stat-card { background: var(--sys-bg2); border-radius: var(--r-inner); padding: 16px 22px; display: flex; align-items: center; gap: 20px; }
+  .stat-card .s-label { font-size: 12px; font-weight: 500; color: var(--ink4); margin-bottom: 4px; letter-spacing: 0.01em; }
+  .stat-card .s-val { font-size: 28px; font-weight: 700; letter-spacing: -0.8px; line-height: 1; color: var(--ink); }
+  .stat-card .s-sub { font-size: 12px; color: var(--ink4); margin-top: 3px; }
+  .stat-card.dark { background: var(--ink); }
+  .stat-card.dark .s-label { color: rgba(255,255,255,0.45); }
+  .stat-card.dark .s-val   { color: rgba(255,255,255,0.95); }
+  .stat-card.dark .s-sub   { color: rgba(255,255,255,0.3); }
+
+  /* DATE PICKER */
+  .date-picker-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: var(--sys-bg2); border-radius: var(--r-inner); padding: 12px 16px; margin-bottom: 12px; }
+  .date-picker-label { font-size: 13px; font-weight: 600; color: var(--ink); flex-shrink: 0; }
+  .date-picker-options { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .date-default-badge { font-size: 12px; font-weight: 500; color: var(--green); background: var(--green-bg); border-radius: var(--r-pill); padding: 4px 12px; }
+  .date-sep { font-size: 11px; color: var(--ink4); }
+  .date-input { font-size: 12px; font-weight: 500; font-family: var(--font); color: var(--ink); background: var(--sys-bg3); border: none; border-radius: 7px; padding: 5px 10px; outline: none; cursor: pointer; }
+  .date-input:focus { box-shadow: 0 0 0 3px var(--blue-ring); }
+
+  /* PROPOSALS */
+  .rec-panel { margin-bottom: 12px; }
+  .rec-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+  .rec-title { font-size: 17px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; }
+  .rec-subtitle { font-size: 12px; color: var(--ink4); }
+  .rec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
+  .rec-card {
+    background: var(--sys-bg2); border-radius: var(--r-card); padding: 18px 18px 16px;
+    cursor: pointer; transition: transform .15s, box-shadow .15s; position: relative;
+    border: 1.5px solid transparent;
+  }
+  .rec-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+  .rec-card.p1 { border-color: var(--green-border); }
+  .rec-card.p1.active { border-color: var(--green); box-shadow: 0 0 0 4px var(--green-ring); }
+  .rec-card.p2 { border-color: var(--blue-border); }
+  .rec-card.p2.active { border-color: var(--blue); box-shadow: 0 0 0 4px var(--blue-ring); }
+  .rec-card.p3 { border-color: var(--purple-border); }
+  .rec-card.p3.active { border-color: var(--purple); box-shadow: 0 0 0 4px var(--purple-ring); }
+
+  .rec-check { position: absolute; top: 14px; right: 14px; width: 20px; height: 20px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+  .rec-card.p1.active .rec-check { display: flex; background: var(--green); color: #fff; }
+  .rec-card.p2.active .rec-check { display: flex; background: var(--blue);  color: #fff; }
+  .rec-card.p3.active .rec-check { display: flex; background: var(--purple);color: #fff; }
+
+  .rec-badge { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 9px; border-radius: var(--r-pill); margin-bottom: 12px; }
+  .rec-card.p1 .rec-badge { background: var(--green-bg);   color: var(--green); }
+  .rec-card.p2 .rec-badge { background: var(--blue-bg);    color: var(--blue); }
+  .rec-card.p3 .rec-badge { background: var(--purple-bg);  color: var(--purple); }
+
+  .rec-first-pay { font-size: 28px; font-weight: 700; letter-spacing: -0.8px; line-height: 1; margin-bottom: 3px; }
+  .rec-card.p1 .rec-first-pay { color: var(--green); }
+  .rec-card.p2 .rec-first-pay { color: var(--blue); }
+  .rec-card.p3 .rec-first-pay { color: var(--purple); }
+
+  .rec-pct { font-size: 12px; font-weight: 400; color: var(--ink3); margin-bottom: 14px; }
+
+  .rec-meta { display: flex; flex-direction: column; gap: 6px; }
+  .rec-meta-row { display: flex; justify-content: space-between; font-size: 13px; }
+  .rec-meta-row .rk { color: var(--ink3); font-weight: 400; }
+  .rec-meta-row .rv { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+  .rec-select-hint { font-size: 12px; color: var(--ink4); margin-top: 12px; font-weight: 400; }
+  .rec-select-hint::after { content: ' →'; }
+  .rec-card.active .rec-select-hint { display: none; }
+
+  .rec-detail { display: none; margin-top: 16px; padding-top: 14px; border-top: 0.5px solid var(--sys-sep-light); }
+
+  /* SCHEDULE TABLE */
+  .sched-col-header { display: flex; padding: 4px 10px 6px; font-size: 11px; font-weight: 500; color: var(--ink4); }
+  .sh-num  { width: 24px; }
+  .sh-type { flex: 1; padding: 0 6px; }
+  .sh-date { width: 112px; padding: 0 6px; }
+  .sh-amt  { min-width: 82px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  .rs-row { display: flex; align-items: center; padding: 8px 10px; border-bottom: 0.5px solid var(--sys-sep-light); font-size: 13px; background: var(--sys-bg3); border-radius: 0; }
+  .rs-row:first-child { border-radius: var(--r-btn) var(--r-btn) 0 0; }
+  .rs-row:last-child { border-bottom: none; border-radius: 0 0 var(--r-btn) var(--r-btn); }
+  .rs-row:only-child { border-radius: var(--r-btn); }
+  .rs-row.first { background: var(--sys-bg2); }
+  .rs-row .rn { color: var(--ink4); font-weight: 500; width: 24px; font-variant-numeric: tabular-nums; }
+  .rs-row .rt { color: var(--ink3); flex: 1; padding: 0 6px; font-weight: 400; }
+  .rs-row .rd { color: var(--ink3); width: 112px; padding: 0 6px; font-size: 12px; font-weight: 400; }
+  .rs-row .ra { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink); min-width: 82px; text-align: right; }
+  .rec-card.p1 .rs-row.first .ra { color: var(--green); }
+  .rec-card.p2 .rs-row.first .ra { color: var(--blue); }
+  .rec-card.p3 .rs-row.first .ra { color: var(--purple); }
+
+  /* APPROVAL BADGE */
+  .apb { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: var(--r-pill); font-size: 12px; font-weight: 500; }
+  .apb.ok  { background: var(--green-bg); color: var(--green); }
+  .apb.req { background: var(--red-bg);   color: var(--red); }
+
+  /* SECTION HEAD */
+  .sec-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .sec-head h2 { font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; }
+  .sec-note { font-size: 12px; color: var(--amber); font-weight: 500; }
+
+  /* EMPTY */
+  .empty { background: var(--sys-bg2); border-radius: var(--r-card); padding: 52px 32px; text-align: center; }
+  .empty-icon { font-size: 32px; margin-bottom: 12px; }
+  .empty h3 { font-size: 17px; font-weight: 600; color: var(--ink); margin-bottom: 6px; letter-spacing: -0.3px; }
+  .empty p  { font-size: 14px; color: var(--ink3); max-width: 300px; margin: 0 auto; font-weight: 400; line-height: 1.5; }
+
+  .footer-note { font-size: 12px; color: var(--ink4); text-align: center; margin-top: 12px; line-height: 1.6; font-weight: 400; }
+
+  /* RULES */
+  .rules-panel { margin-top: 40px; }
+  .rules-section-label { font-size: 11px; font-weight: 600; color: var(--ink4); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; text-align: center; }
+  .rules-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .rule-card { background: var(--sys-bg2); border-radius: var(--r-card); padding: 18px 18px 14px; display: flex; flex-direction: column; gap: 8px; transition: transform .15s; }
+  .rule-card:hover { transform: translateY(-1px); }
+  .rule-card.is-warn { background: var(--red-bg); }
+  .rule-card-top { display: flex; align-items: center; gap: 10px; }
+  .rule-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .rule-icon.neutral { background: var(--sys-bg3); }
+  .rule-icon.warn    { background: rgba(194,41,10,0.1); }
+  .rule-card-title { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+  .rule-card.is-warn .rule-card-title { color: var(--red); }
+  .rule-card-body { font-size: 12px; color: var(--ink3); line-height: 1.55; padding-left: 44px; margin-top: -2px; font-weight: 400; }
+
+  @media (max-width: 720px) {
+    .stats    { grid-template-columns: 1fr 1fr; }
+    .rec-grid { grid-template-columns: 1fr; }
+    .rules-grid { grid-template-columns: 1fr 1fr; }
+    .page-heading { font-size: 26px; }
   }
 </style>
 </head>
 <body>
 
-<header class="topbar"></header>
+<nav class="nav">
+  <span class="nav-title">Payment Plan Calculator</span>
+  <span class="nav-sub">Collections</span>
+</nav>
 
-<div class="hero">
-  <h1>Payment Plan Calculator</h1>
-</div>
+<div class="page">
 
-<div class="main">
+  <h1 class="page-heading">Payment Plan Calculator</h1>
+  <p class="page-sub">Create and review instalment proposals for overdue accounts.</p>
 
-  <!-- INPUT -->
-  <div class="input-panel" style="display:block;padding:24px 28px 22px;">
+  <!-- INPUT CARD -->
+  <div class="sf-card sf-card-inner">
+    <span class="sf-section-label">Invoices</span>
+    <span class="sf-min-hint" id="hintMin">Minimum payment plan amount GBP 1,000</span>
 
-    <!-- Invoice header -->
-    <label class="field-label" style="margin-bottom:4px;">Invoices</label>
-    <div class="field-hint" style="margin-bottom:10px;">Minimum payment plan amount <span id="hintMin">GBP 1,000</span></div>
-
-    <!-- Invoice lines -->
-    <div id="invoiceLines" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+    <div id="invoiceLines"></div>
 
     <button onclick="addLine()" class="add-line-btn">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4v6M4 7h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
       Add invoice
     </button>
 
-    <div class="input-error" id="amtErr" style="margin-top:8px;"></div>
+    <div class="input-error" id="amtErr"></div>
 
-    <!-- Total row -->
-    <div id="totalDisplay" style="display:none;margin-top:10px;padding:10px 14px;background:var(--grey-1);border:1px solid var(--grey-2);border-radius:var(--r-sm);align-items:center;justify-content:space-between;">
-      <span style="font-size:12px;font-weight:600;color:var(--grey-5);">Total outstanding</span>
-      <span id="totalVal" style="font-size:18px;font-weight:800;color:var(--black);letter-spacing:-0.4px;">£0.00</span>
+    <div class="total-row" id="totalRow">
+      <span class="total-label">Total outstanding</span>
+      <span class="total-val" id="totalVal">£0.00</span>
     </div>
+    <div class="late-fee-note" id="lateFeeNote" style="display:none">Ensure all charged late fees are included</div>
 
-    <!-- Late fee reminder below total -->
-    <div id="hintWrap" style="margin-top:6px;" class="field-hint">Ensure all charged late fees are included</div>
+    <div class="ctrl-sep"></div>
 
-    <!-- Frequency above, Duration below — stacked centred -->
-    <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--grey-2);">
-
-      <!-- Frequency -->
-      <div style="display:flex;justify-content:center;margin-bottom:16px;">
-        <div>
-          <label class="field-label" style="text-align:center;display:block;margin-bottom:6px;">Frequency</label>
-          <div class="seg" style="width:200px;">
-            <button id="btnW" class="on" onclick="setFreq('w')">Weekly</button>
-            <button id="btnM" onclick="setFreq('m')">Monthly</button>
-          </div>
+    <!-- Frequency -->
+    <div style="display:flex;justify-content:center;margin-bottom:20px;">
+      <div>
+        <span class="sf-section-label" style="text-align:center;display:block;margin-bottom:8px;">Frequency</span>
+        <div class="sf-seg">
+          <button id="btnW" class="on" onclick="setFreq('w')">Weekly</button>
+          <button id="btnM" onclick="setFreq('m')">Monthly</button>
         </div>
       </div>
-
-      <!-- Duration time bar -->
-      <div style="max-width:600px;margin:0 auto;">
-        <label class="field-label" style="text-align:center;display:block;margin-bottom:6px;">Duration</label>
-        <div class="timebar-wrap" id="timebarWrap">
-          <div class="timebar-selected" id="timebarLabel">4 weeks</div>
-          <div class="timebar-track" id="timebarTrack">
-            <div class="timebar-fill" id="timebarFill"></div>
-            <div class="timebar-ticks" id="timebarTicks"></div>
-            <div class="timebar-thumb" id="timebarThumb"></div>
-          </div>
-        </div>
-      </div>
-
     </div>
 
+    <!-- Timebar -->
+    <div style="max-width:580px;margin:0 auto;">
+      <span class="sf-section-label" style="text-align:center;display:block;margin-bottom:6px;">Duration</span>
+      <div class="timebar-wrap" id="timebarWrap">
+        <div class="timebar-selected" id="timebarLabel">4 weeks</div>
+        <div class="timebar-track" id="timebarTrack">
+          <div class="timebar-fill" id="timebarFill"></div>
+          <div class="timebar-ticks" id="timebarTicks"></div>
+          <div class="timebar-thumb" id="timebarThumb"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="alert" id="alert"></div>
+  <!-- ALERT -->
+  <div class="sf-alert" id="alert"></div>
 
   <!-- STATS -->
   <div class="stats" id="stats" style="display:none">
-    <div class="stat-card accent-card">
-      <div class="s-label">Invoice Total</div>
+    <div class="stat-card dark">
+      <div class="s-label">Invoice total</div>
       <div class="s-val" id="sTotal">—</div>
       <div class="s-sub" id="sCurLabel">incl. all late fees</div>
-    </div>
-    <div class="stat-card">
-      <div class="s-label">1st Proposal · 33%</div>
-      <div class="s-val green-c" id="sStr">—</div>
-      <div class="s-sub">Preferred starting point</div>
-    </div>
-    <div class="stat-card">
-      <div class="s-label">2nd Proposal · 20%</div>
-      <div class="s-val blue-c" id="sTgt">—</div>
-      <div class="s-sub">If buyer needs more flexibility</div>
     </div>
   </div>
 
@@ -397,80 +348,44 @@
     <div class="empty">
       <div class="empty-icon">📋</div>
       <h3>No plan generated yet</h3>
-      <p>Enter invoice amounts and select a duration to see instalment options.</p>
+      <p>Enter invoice amounts above to see recommended payment plan proposals.</p>
     </div>
   </div>
 
   <!-- RULES -->
-  <div class="rules-panel" style="margin-top:32px;">
-    <div class="rules-section-label">SOP Rules · read before creating any plan</div>
+  <div class="rules-panel">
+    <div class="rules-section-label">SOP Rules</div>
     <div class="rules-grid">
-      <div class="rule-card">
-        <div class="rule-card-top"><div class="rule-icon neutral">📄</div><div class="rule-card-title">Only late invoices are eligible</div></div>
-        <div class="rule-card-body">Current or future-dated invoices cannot be included in a payment plan.</div>
-      </div>
-      <div class="rule-card">
-        <div class="rule-card-top"><div class="rule-icon neutral">📅</div><div class="rule-card-title">Standard maximum is 3 months</div></div>
-        <div class="rule-card-body">Exception up to 6 months is possible but must be clearly justified.</div>
-      </div>
-      <div class="rule-card">
-        <div class="rule-card-top"><div class="rule-icon neutral">👥</div><div class="rule-card-title">Over 6 months · tag Collections team</div></div>
-        <div class="rule-card-body">Do not escalate the case. Tag the Collections team in the support case and wait for their approval before offering any plan beyond 6 months.</div>
-      </div>
-      <div class="rule-card">
-        <div class="rule-card-top"><div class="rule-icon neutral">💶</div><div class="rule-card-title">Over threshold · tag Collections team</div></div>
-        <div class="rule-card-body">Do not escalate the case. Tag the Collections team in the support case and wait for their approval before confirming any high-value plan.</div>
-      </div>
-      <div class="rule-card">
-        <div class="rule-card-top"><div class="rule-icon neutral">⏱</div><div class="rule-card-title">First payment is due within 7 days</div></div>
-        <div class="rule-card-body">This demonstrates the buyer's serious commitment to the payment plan.</div>
-      </div>
-      <div class="rule-card">
-        <div class="rule-card-top"><div class="rule-icon neutral">📧</div><div class="rule-card-title">Confirm every plan by email</div></div>
-        <div class="rule-card-body">Include invoice list, total amount, instalment schedule, due dates and payment reference.</div>
-      </div>
-      <div class="rule-card is-warn">
-        <div class="rule-card-top"><div class="rule-icon warn">🚫</div><div class="rule-card-title">Never waive late fees</div></div>
-        <div class="rule-card-body">Always add all late fees to the total before calculating any instalment amounts.</div>
-      </div>
-      <div class="rule-card is-warn">
-        <div class="rule-card-top"><div class="rule-icon warn">🏦</div><div class="rule-card-title">No DCA invoices</div></div>
-        <div class="rule-card-body">Invoices already sent to a debt collection agency are excluded from payment plans.</div>
-      </div>
-      <div class="rule-card is-warn">
-        <div class="rule-card-top"><div class="rule-icon warn">⛔</div><div class="rule-card-title">Previous default means not eligible</div></div>
-        <div class="rule-card-body">If a buyer broke a prior payment plan, no new plan can be offered to them.</div>
-      </div>
+      <div class="rule-card"><div class="rule-card-top"><div class="rule-icon neutral">📄</div><div class="rule-card-title">Only late invoices are eligible</div></div><div class="rule-card-body">Current or future-dated invoices cannot be included in a payment plan.</div></div>
+      <div class="rule-card"><div class="rule-card-top"><div class="rule-icon neutral">📅</div><div class="rule-card-title">Standard maximum is 3 months</div></div><div class="rule-card-body">Exception up to 6 months is possible but must be clearly justified.</div></div>
+      <div class="rule-card"><div class="rule-card-top"><div class="rule-icon neutral">👥</div><div class="rule-card-title">Over 6 months · tag Collections team</div></div><div class="rule-card-body">Do not escalate the case. Tag the Collections team in the support case and wait for their approval before offering any plan beyond 6 months.</div></div>
+      <div class="rule-card"><div class="rule-card-top"><div class="rule-icon neutral">💶</div><div class="rule-card-title">Over threshold · tag Collections team</div></div><div class="rule-card-body">Do not escalate the case. Tag the Collections team in the support case and wait for their approval before confirming any high-value plan.</div></div>
+      <div class="rule-card"><div class="rule-card-top"><div class="rule-icon neutral">⏱</div><div class="rule-card-title">First payment due within 7 days</div></div><div class="rule-card-body">Payment must be made within 7 days of the payment plan being confirmed at the latest. This demonstrates the buyer's serious commitment to the plan.</div></div>
+      <div class="rule-card"><div class="rule-card-top"><div class="rule-icon neutral">📧</div><div class="rule-card-title">Confirm every plan by email</div></div><div class="rule-card-body">Include invoice list, total amount, instalment schedule, due dates and payment reference.</div></div>
+      <div class="rule-card is-warn"><div class="rule-card-top"><div class="rule-icon warn">🚫</div><div class="rule-card-title">Never waive late fees</div></div><div class="rule-card-body">Always add all late fees to the total before calculating any instalment amounts.</div></div>
+      <div class="rule-card is-warn"><div class="rule-card-top"><div class="rule-icon warn">🏦</div><div class="rule-card-title">No DCA invoices</div></div><div class="rule-card-body">Invoices already sent to a debt collection agency are excluded from payment plans.</div></div>
+      <div class="rule-card is-warn"><div class="rule-card-top"><div class="rule-icon warn">⛔</div><div class="rule-card-title">Previous default means not eligible</div></div><div class="rule-card-body">If a buyer broke a prior payment plan, no new plan can be offered to them.</div></div>
     </div>
   </div>
 
 </div>
 
 <script>
-  let freq = 'w'; // default weekly
+  let freq = 'w';
   let selectedDur = null;
   let autoRunTimer = null;
+  let tbDragging = false;
   const E = id => document.getElementById(id);
 
-  function scheduleAutoRun() {
-    clearTimeout(autoRunTimer);
-    autoRunTimer = setTimeout(() => {
-      const v = recalcTotal();
-      if (v > 0) run();
-    }, 350);
-  }
-
   const CURRENCIES = {
-    EUR: { sym: '€', code: 'EUR', locale: 'en-IE', threshold: 5000 },
-    GBP: { sym: '£', code: 'GBP', locale: 'en-GB', threshold: 4300 },
-    SEK: { sym: 'kr', code: 'SEK', locale: 'sv-SE', threshold: 55000 },
-    NOK: { sym: 'kr', code: 'NOK', locale: 'nb-NO', threshold: 55000 },
-    PLN: { sym: 'zł', code: 'PLN', locale: 'pl-PL', threshold: 22000 },
-    USD: { sym: '$',  code: 'USD', locale: 'en-US', threshold: 5400 },
+    EUR: { sym:'€', code:'EUR', locale:'en-IE', threshold:5000  },
+    GBP: { sym:'£', code:'GBP', locale:'en-GB', threshold:4300  },
+    SEK: { sym:'kr',code:'SEK', locale:'sv-SE', threshold:55000 },
+    NOK: { sym:'kr',code:'NOK', locale:'nb-NO', threshold:55000 },
+    PLN: { sym:'zł',code:'PLN', locale:'pl-PL', threshold:22000 },
+    USD: { sym:'$', code:'USD', locale:'en-US', threshold:5400  },
   };
   const MIN_AMOUNTS = { EUR:1150, GBP:1000, SEK:12500, NOK:12900, PLN:4900, USD:1325 };
-  const CUR_LABELS  = { EUR:'EUR', GBP:'GBP', SEK:'SEK', NOK:'NOK', PLN:'PLN', USD:'USD' };
-
   const CUR_OPTS = [
     { value:'EUR', sym:'€',  label:'EUR' },
     { value:'GBP', sym:'£',  label:'GBP' },
@@ -480,422 +395,402 @@
     { value:'USD', sym:'$',  label:'USD' },
   ];
 
-  // Get currency from first line (used for threshold/min checks and formatting)
-  function getCur() {
-    const firstSel = document.querySelector('.line-cur');
-    const code = firstSel ? firstSel.value : 'GBP';
-    return CURRENCIES[code] || CURRENCIES['GBP'];
-  }
+  /* ── Tiered proposals from screenshot ──
+     Bands: 1000-1999, 2000-2999, 3000-3999, 4000-4999
+     P1: 33% Weekly  → 4w, 6w, 8w, 10w
+     P2: 20% Weekly  → 6w, 8w, 10w, 12w
+     P3: 33% Monthly → 3m, 3m, 3m, 3m
+  */
+  const PROPOSAL_BANDS = [
+    { min:1000,  max:1999,  p1:{pct:0.33,freq:'Weekly', n:4,  unit:'weekly',  label:'4 weeks'},  p2:{pct:0.20,freq:'Weekly', n:6,  unit:'weekly',  label:'6 weeks'},  p3:{pct:0.33,freq:'Monthly',n:3, unit:'monthly', label:'3 months'} },
+    { min:2000,  max:2999,  p1:{pct:0.33,freq:'Weekly', n:6,  unit:'weekly',  label:'6 weeks'},  p2:{pct:0.20,freq:'Weekly', n:8,  unit:'weekly',  label:'8 weeks'},  p3:{pct:0.33,freq:'Monthly',n:3, unit:'monthly', label:'3 months'} },
+    { min:3000,  max:3999,  p1:{pct:0.33,freq:'Weekly', n:8,  unit:'weekly',  label:'8 weeks'},  p2:{pct:0.20,freq:'Weekly', n:10, unit:'weekly',  label:'10 weeks'}, p3:{pct:0.33,freq:'Monthly',n:3, unit:'monthly', label:'3 months'} },
+    { min:4000,  max:4999,  p1:{pct:0.33,freq:'Weekly', n:10, unit:'weekly',  label:'10 weeks'}, p2:{pct:0.20,freq:'Weekly', n:12, unit:'weekly',  label:'12 weeks'}, p3:{pct:0.33,freq:'Monthly',n:3, unit:'monthly', label:'3 months'} },
+  ];
 
-  function fmt(n) {
-    const c = getCur();
-    return c.sym + n.toLocaleString(c.locale, {minimumFractionDigits:2, maximumFractionDigits:2});
-  }
+  function getBand(v) { return PROPOSAL_BANDS.find(b => v >= b.min && v <= b.max) || null; }
 
-  function buildCurrencySelect(selectedVal) {
-    const opts = CUR_OPTS.map(o =>
-      `<option value="${o.value}" data-sym="${o.sym}"${o.value===selectedVal?' selected':''}>${o.label}</option>`
-    ).join('');
-    return `<select class="currency-select line-cur" style="min-width:72px;height:52px;" onchange="onLineCurChange(this)">${opts}</select>`;
+  function getCur() { const s = document.querySelector('.line-cur'); return CURRENCIES[s ? s.value : 'GBP'] || CURRENCIES['GBP']; }
+  function fmt(n) { const c = getCur(); return c.sym + n.toLocaleString(c.locale, {minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+  function buildCurrencySelect(sel) {
+    return `<select class="line-cur" onchange="onLineCurChange(this)">` +
+      CUR_OPTS.map(o => `<option value="${o.value}" data-sym="${o.sym}"${o.value===sel?' selected':''}>${o.label}</option>`).join('') +
+      `</select>`;
   }
 
   function onLineCurChange(sel) {
     const sym = sel.options[sel.selectedIndex].dataset.sym;
-    const wrap = sel.closest('.invoice-line').querySelector('.amt-sym');
-    if (wrap) wrap.textContent = sym;
-    // Update hint based on first line
-    const cur = getCur();
-    const minAmt = MIN_AMOUNTS[cur.code] || 250;
-    E('hintMin').textContent = `${cur.code} ${minAmt.toLocaleString()}`;
+    const sw = sel.closest('.invoice-line').querySelector('.amt-sym');
+    if (sw) sw.textContent = sym;
+    const c = getCur(), min = MIN_AMOUNTS[c.code]||1000;
+    E('hintMin').textContent = `Minimum payment plan amount ${c.code} ${min.toLocaleString()}`;
     recalcTotal();
   }
 
-  function makeLine(curCode) {
+  function makeLine(code) {
     const div = document.createElement('div');
     div.className = 'invoice-line';
-    const sym = (CUR_OPTS.find(o => o.value === curCode) || CUR_OPTS[1]).sym;
-    div.innerHTML = `
-      ${buildCurrencySelect(curCode)}
-      <div class="amt-wrap" style="flex:1;">
-        <span class="amt-sym">${sym}</span>
-        <input class="amt-input line-amt" type="number" placeholder="0.00" min="0" step="0.01" oninput="recalcTotal(true)"
-          style="border-radius:0 var(--r-sm) var(--r-sm) 0;"/>
-      </div>
-      <button onclick="removeLine(this)"
-        style="flex-shrink:0;width:36px;height:52px;background:var(--danger-bg);border:1px solid #F5C5C5;border-radius:var(--r-sm);cursor:pointer;font-size:16px;color:var(--danger);font-weight:700;display:flex;align-items:center;justify-content:center;margin-left:4px;">×</button>`;
-
-    // Tab on the input of the last line adds a new line and focuses it
-    const input = div.querySelector('.line-amt');
-    input.addEventListener('keydown', function(e) {
+    const sym = (CUR_OPTS.find(o=>o.value===code)||CUR_OPTS[1]).sym;
+    div.innerHTML = `${buildCurrencySelect(code)}<div class="amt-wrap"><span class="amt-sym">${sym}</span><input class="line-amt" type="number" placeholder="0.00" min="0" step="0.01" oninput="recalcTotal(true)"/></div><button class="remove-btn" onclick="removeLine(this)">×</button>`;
+    const inp = div.querySelector('.line-amt');
+    inp.addEventListener('keydown', function(e) {
       if (e.key !== 'Tab' || e.shiftKey) return;
-      const allInputs = Array.from(document.querySelectorAll('.line-amt'));
-      if (allInputs.indexOf(this) === allInputs.length - 1) {
+      const all = Array.from(document.querySelectorAll('.line-amt'));
+      if (all.indexOf(this) === all.length - 1) {
         e.preventDefault();
         addLine();
-        // Focus the new line's input
-        const newInputs = document.querySelectorAll('.line-amt');
-        newInputs[newInputs.length - 1].focus();
+        document.querySelectorAll('.line-amt')[document.querySelectorAll('.line-amt').length-1].focus();
       }
     });
-
     return div;
   }
 
   function addLine() {
-    // New lines inherit currency of first line
-    const firstSel = document.querySelector('.line-cur');
-    const curCode  = firstSel ? firstSel.value : 'GBP';
-    E('invoiceLines').appendChild(makeLine(curCode));
+    const s = document.querySelector('.line-cur');
+    E('invoiceLines').appendChild(makeLine(s ? s.value : 'GBP'));
   }
 
   function removeLine(btn) {
-    const lines = document.querySelectorAll('.invoice-line');
-    if (lines.length <= 1) return; // keep at least one line
+    if (document.querySelectorAll('.invoice-line').length <= 1) return;
     btn.closest('.invoice-line').remove();
     recalcTotal();
   }
+
+  function scheduleAutoRun() { clearTimeout(autoRunTimer); autoRunTimer = setTimeout(() => { if (recalcTotal() > 0) run(); }, 350); }
 
   function recalcTotal(triggerAuto) {
     const inputs = document.querySelectorAll('.line-amt');
     let total = 0;
     inputs.forEach(i => { const v = parseFloat(i.value); if (v > 0) total += v; });
-    const disp  = E('totalDisplay');
-    const valEl = E('totalVal');
-
+    const row = E('totalRow'), valEl = E('totalVal'), note = E('lateFeeNote');
     if (total > 0) {
-      disp.style.display = 'flex';
-      valEl.textContent  = fmt(total);
-
-      // Colour-code based on approval rules
-      const cur    = getCur();
-      const minAmt = MIN_AMOUNTS[cur.code] || 1000;
-      const opts   = getDurOpts ? getDurOpts() : [];
+      row.classList.add('show');
+      note.style.display = 'block';
+      valEl.textContent = fmt(total);
+      const cur = getCur(), min = MIN_AMOUNTS[cur.code]||1000;
+      const opts = getDurOpts ? getDurOpts() : [];
       const selOpt = opts.find(o => o.n === selectedDur);
-      const isExcDur = selOpt && selOpt.exc;
-      const needsApproval = total > cur.threshold || isExcDur;
-      const belowMin      = total < minAmt;
-
-      if (belowMin) {
-        // Below minimum — neutral grey
-        disp.style.background   = 'var(--grey-1)';
-        disp.style.borderColor  = 'var(--grey-2)';
-        valEl.style.color       = 'var(--grey-5)';
-      } else if (needsApproval) {
-        // Needs Collections team — red tint
-        disp.style.background   = 'var(--danger-bg)';
-        disp.style.borderColor  = '#F5C5C5';
-        valEl.style.color       = 'var(--danger)';
+      const needsAp = total > cur.threshold || (selOpt && selOpt.exc);
+      const below = total < min;
+      if (below) {
+        row.style.background = 'var(--grey-1)'; row.style.borderColor = 'var(--grey-2)'; valEl.style.color = 'var(--grey-5)';
+      } else if (needsAp) {
+        row.style.background = 'var(--danger-bg)'; row.style.borderColor = 'var(--danger-mid)'; valEl.style.color = 'var(--danger)';
       } else {
-        // All good — green tint
-        disp.style.background   = 'var(--green-bg)';
-        disp.style.borderColor  = 'var(--green-mid)';
-        valEl.style.color       = 'var(--green)';
+        row.style.background = 'var(--green-bg)'; row.style.borderColor = 'var(--green-mid)'; valEl.style.color = 'var(--green)';
       }
     } else {
-      disp.style.display = 'none';
+      row.classList.remove('show');
+      note.style.display = 'none';
     }
-
     if (triggerAuto) scheduleAutoRun();
     return total;
   }
 
-  function updateSymbol() {
-    // legacy stub — no longer needed but kept safe
-    recalcTotal();
-  }
-
-  // Initialise with one invoice line on load
-  E('invoiceLines').appendChild(makeLine('GBP'));
-
+  /* ── Timebar ── */
   const WEEKLY_OPTS  = [
-    {n:4,  label:'4 weeks',  exc:false}, {n:5,  label:'5 weeks',  exc:false},
-    {n:6,  label:'6 weeks',  exc:false}, {n:7,  label:'7 weeks',  exc:false},
-    {n:8,  label:'8 weeks',  exc:false}, {n:9,  label:'9 weeks',  exc:false},
-    {n:10, label:'10 weeks', exc:false}, {n:11, label:'11 weeks', exc:false},
-    {n:12, label:'12 weeks', exc:false}, {n:13, label:'13 weeks', exc:false},
-    {n:18, label:'18 weeks', exc:true }, {n:22, label:'22 weeks', exc:true },
-    {n:26, label:'26 weeks', exc:true },
+    {n:4,label:'4 weeks',exc:false},{n:5,label:'5 weeks',exc:false},{n:6,label:'6 weeks',exc:false},
+    {n:7,label:'7 weeks',exc:false},{n:8,label:'8 weeks',exc:false},{n:9,label:'9 weeks',exc:false},
+    {n:10,label:'10 weeks',exc:false},{n:11,label:'11 weeks',exc:false},{n:12,label:'12 weeks',exc:false},
+    {n:13,label:'13 weeks',exc:false},{n:18,label:'18 weeks',exc:true},{n:22,label:'22 weeks',exc:true},{n:26,label:'26 weeks',exc:true},
   ];
-  const MONTHLY_OPTS = [
-    {n:1, label:'1 month',  exc:false}, {n:2, label:'2 months', exc:false},
-    {n:3, label:'3 months', exc:false}, {n:4, label:'4 months', exc:true },
-    {n:5, label:'5 months', exc:true }, {n:6, label:'6 months', exc:true },
-  ];
-
-  function getDurOpts() { return freq === 'w' ? WEEKLY_OPTS : MONTHLY_OPTS; }
-
-  /* ── TIME BAR ── */
-  let tbDragging = false;
+  const MONTHLY_OPTS = [{n:1,label:'1 month',exc:false},{n:2,label:'2 months',exc:false},{n:3,label:'3 months',exc:false},{n:4,label:'4 months',exc:true},{n:5,label:'5 months',exc:true},{n:6,label:'6 months',exc:true}];
+  function getDurOpts() { return freq==='w' ? WEEKLY_OPTS : MONTHLY_OPTS; }
 
   function buildDurToggle() {
     const opts = getDurOpts();
-    // Snap selectedDur to nearest valid option
-    if (!opts.find(o => o.n === selectedDur)) {
-      selectedDur = opts[0].n;
-    }
+    if (!opts.find(o=>o.n===selectedDur)) selectedDur = opts[0].n;
     renderTimebar(opts);
   }
 
   function renderTimebar(opts) {
-    const track  = E('timebarTrack');
-    const ticks  = E('timebarTicks');
-    const thumb  = E('timebarThumb');
-    const fill   = E('timebarFill');
-    const label  = E('timebarLabel');
-
-    const total  = opts.length - 1;
-    const idx    = opts.findIndex(o => o.n === selectedDur);
-    const pct    = total === 0 ? 0 : (idx / total) * 100;
-    const opt    = opts[idx];
-    const isExc   = opt && opt.exc;
-    const total_v = recalcTotal();
-    const cur_v   = getCur();
-    const needsAp = isExc || (total_v > 0 && total_v > (cur_v ? cur_v.threshold : 5000));
-
-    // Fill
-    fill.style.width  = pct + '%';
-    fill.className    = 'timebar-fill' + (needsAp ? ' needs-approval' : '');
-
-    // Thumb
-    thumb.style.left  = pct + '%';
-    thumb.className   = 'timebar-thumb' + (needsAp ? ' needs-approval' : '');
-
-    // Label
-    label.textContent = opt ? opt.label : '';
-    label.className   = 'timebar-selected' + (needsAp ? ' needs-approval' : '');
-
-    // Ticks
-    ticks.innerHTML = opts.map((o, i) => {
-      const x = total === 0 ? 50 : (i / total) * 100;
-      const isMajor = !o.exc && (freq === 'w' ? [4,8,13].includes(o.n) : [1,3,6].includes(o.n));
-      return `<div class="timebar-tick${isMajor?' major':''}" style="left:${x}%"></div>`;
+    const track=E('timebarTrack'),ticks=E('timebarTicks'),thumb=E('timebarThumb'),fill=E('timebarFill'),label=E('timebarLabel');
+    const total=opts.length-1, idx=opts.findIndex(o=>o.n===selectedDur), pct=total===0?0:(idx/total)*100;
+    const opt=opts[idx], tv=recalcTotal(), cur=getCur();
+    const needsAp=(opt&&opt.exc)||(tv>0&&tv>cur.threshold);
+    fill.style.width=pct+'%'; fill.className='timebar-fill'+(needsAp?' na':'');
+    thumb.style.left=pct+'%'; thumb.className='timebar-thumb'+(needsAp?' na':'');
+    label.textContent=opt?opt.label:''; label.className='timebar-selected'+(needsAp?' na':'');
+    ticks.innerHTML=opts.map((o,i)=>{
+      const x=total===0?50:(i/total)*100;
+      const maj=freq==='w'?[4,8,13].includes(o.n):[1,3,6].includes(o.n);
+      return `<div class="timebar-tick${maj?' major':''}" style="left:${x}%"></div>`;
     }).join('');
   }
 
-  function snapToNearest(clientX) {
-    const track  = E('timebarTrack');
-    const opts   = getDurOpts();
-    const rect   = track.getBoundingClientRect();
-    const pct    = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    const idx    = Math.round(pct * (opts.length - 1));
-    selectedDur  = opts[Math.max(0, Math.min(opts.length-1, idx))].n;
-    renderTimebar(opts);
-    scheduleAutoRun();
+  function snapToNearest(cx) {
+    const rect=E('timebarTrack').getBoundingClientRect();
+    const opts=getDurOpts(), pct=Math.max(0,Math.min(1,(cx-rect.left)/rect.width));
+    const idx=Math.round(pct*(opts.length-1));
+    selectedDur=opts[Math.max(0,Math.min(opts.length-1,idx))].n;
+    renderTimebar(opts); recalcTotal(); timebarUsed = true; scheduleAutoRun();
   }
 
-  // Mouse events
   function initTimebarEvents() {
-    const track = E('timebarTrack');
-    const thumb = E('timebarThumb');
-
-    track.addEventListener('mousedown', e => { tbDragging = true; snapToNearest(e.clientX); e.preventDefault(); });
-    thumb.addEventListener('mousedown', e => { tbDragging = true; e.preventDefault(); });
-    document.addEventListener('mousemove', e => { if (tbDragging) snapToNearest(e.clientX); });
-    document.addEventListener('mouseup',   () => { tbDragging = false; });
-
-    // Touch
-    track.addEventListener('touchstart', e => { tbDragging = true; snapToNearest(e.touches[0].clientX); }, {passive:true});
-    thumb.addEventListener('touchstart', e => { tbDragging = true; }, {passive:true});
-    document.addEventListener('touchmove', e => { if (tbDragging) snapToNearest(e.touches[0].clientX); }, {passive:true});
-    document.addEventListener('touchend',  () => { tbDragging = false; });
-  }
-
-  function selectDur(n) {
-    selectedDur = n;
-    renderTimebar(getDurOpts());
-    recalcTotal(); // refresh total colour based on new duration
-    scheduleAutoRun();
+    const tr=E('timebarTrack'),th=E('timebarThumb');
+    tr.addEventListener('mousedown',e=>{tbDragging=true;snapToNearest(e.clientX);e.preventDefault();});
+    th.addEventListener('mousedown',e=>{tbDragging=true;e.preventDefault();});
+    document.addEventListener('mousemove',e=>{if(tbDragging)snapToNearest(e.clientX);});
+    document.addEventListener('mouseup',()=>{tbDragging=false;});
+    tr.addEventListener('touchstart',e=>{tbDragging=true;snapToNearest(e.touches[0].clientX);},{passive:true});
+    th.addEventListener('touchstart',()=>{tbDragging=true;},{passive:true});
+    document.addEventListener('touchmove',e=>{if(tbDragging)snapToNearest(e.touches[0].clientX);},{passive:true});
+    document.addEventListener('touchend',()=>{tbDragging=false;});
   }
 
   function setFreq(f) {
-    freq = f;
-    E('btnM').classList.toggle('on', f==='m');
-    E('btnW').classList.toggle('on', f==='w');
-    buildDurToggle();
-    recalcTotal(); // refresh colour
-    scheduleAutoRun();
+    freq=f; E('btnW').classList.toggle('on',f==='w'); E('btnM').classList.toggle('on',f==='m');
+    timebarUsed = false;
+    buildDurToggle(); recalcTotal(); scheduleAutoRun();
   }
 
-  // Initialise duration time bar on load
-  selectedDur = 4; // default to 4 weeks
-  buildDurToggle();
-  initTimebarEvents();
+  function selectDur(n) { selectedDur=n; renderTimebar(getDurOpts()); recalcTotal(); scheduleAutoRun(); }
 
-  function run() {
-    const v      = recalcTotal();
-    const cur    = getCur();
-    const minAmt = MIN_AMOUNTS[cur.code] || 250;
-    const errEl  = E('amtErr');
-
-    if (!v || v < minAmt) {
-      errEl.textContent = !v || v <= 0
-        ? 'Please enter at least one invoice amount.'
-        : `Minimum total is ${cur.sym}${minAmt.toLocaleString()}. Current total: ${fmt(v)}.`;
-      errEl.className = 'input-error show';
-      return;
-    }
-
-    errEl.className = 'input-error';
-
-    const over5k = v > cur.threshold;
-    const al = E('alert');
-    if (over5k) {
-      al.className = 'alert show';
-      al.innerHTML = `⚠ <strong>Collections team involvement required</strong> · This plan total exceeds ${cur.sym}${cur.threshold.toLocaleString()}. Do not escalate the case — tag the Collections team in the support case for approval.`;
-    } else { al.className = 'alert'; }
-
-    E('stats').style.display = 'grid';
-    E('sTotal').textContent = fmt(v);
-    E('sCurLabel').textContent = `${cur.code} · incl. all late fees`;
-    E('sStr').textContent = fmt(v * 0.33);
-    E('sTgt').textContent = fmt(v * 0.20);
-
-    const allPlans = freq==='m' ? monthlyPlans(v,over5k,cur) : weeklyPlans(v,over5k,cur);
-    const plan = allPlans.find(p => p.n === selectedDur) || allPlans[0];
-    E('out').innerHTML = renderSinglePlan(plan, freq, cur);
-  }
-
-  function monthlyPlans(v, over5k, cur) {
-    return [
-      {n:1, label:'1 month',  exc:false},
-      {n:2, label:'2 months', exc:false},
-      {n:3, label:'3 months', exc:false},
-      {n:4, label:'4 months', exc:true },
-      {n:5, label:'5 months', exc:true },
-      {n:6, label:'6 months', exc:true },
-    ].map(o => ({
-      durLabel:o.label, exc:o.exc, n:o.n, unit:'monthly',
-      needsApproval: over5k||o.exc,
-      approvalNote: over5k&&o.exc ? `Tag Collections team in support case (amount + exception)`
-                  : over5k        ? `Tag Collections team in support case (amount over ${cur.sym}${cur.threshold.toLocaleString()})`
-                  : o.exc         ? `Tag Collections team in support case (exception over 3 mo)` : null,
-      amount: v
-    }));
-  }
-
-  function weeklyPlans(v, over5k, cur) {
-    return [
-      {n:4,  label:'4 weeks',  sub:'~1 month',    exc:false},
-      {n:5,  label:'5 weeks',  sub:'',             exc:false},
-      {n:6,  label:'6 weeks',  sub:'~1.5 months',  exc:false},
-      {n:7,  label:'7 weeks',  sub:'',             exc:false},
-      {n:8,  label:'8 weeks',  sub:'~2 months',    exc:false},
-      {n:9,  label:'9 weeks',  sub:'',             exc:false},
-      {n:10, label:'10 weeks', sub:'~2.5 months',  exc:false},
-      {n:11, label:'11 weeks', sub:'',             exc:false},
-      {n:12, label:'12 weeks', sub:'~3 months',    exc:false},
-      {n:13, label:'13 weeks', sub:'~3 months',    exc:false},
-      {n:18, label:'18 weeks', sub:'~4 months',    exc:true },
-      {n:22, label:'22 weeks', sub:'~5 months',    exc:true },
-      {n:26, label:'26 weeks', sub:'~6 months',    exc:true },
-    ].map(o => ({
-      durLabel:o.label, durSub:o.sub, exc:o.exc, n:o.n, unit:'weekly',
-      needsApproval: over5k||o.exc,
-      approvalNote: over5k&&o.exc ? `Tag Collections team in support case (amount + exception)`
-                  : over5k        ? `Tag Collections team in support case (amount over ${cur.sym}${cur.threshold.toLocaleString()})`
-                  : o.exc         ? `Tag Collections team in support case (exception over 3 mo)` : null,
-      amount: v
-    }));
-  }
-
-  function buildSchedule(uid, firstAmt, remEa, n, unit, proposal) {
-    if (n === 1) return '';
+  /* ── Schedule builder ── */
+  function buildSchedRows(firstAmt, remAmt, n, unit, cls) {
     let rows = '';
-    for (let i = 1; i <= n; i++) {
-      const isFirst = i === 1;
-      const amt     = isFirst ? firstAmt : remEa;
-      const label   = isFirst ? `1st payment (${proposal})` : `Payment ${i}`;
-      rows += `<div class="sched-row ${isFirst ? 'first-sched-row' : ''}">
-        <span class="sr-num">${i}</span>
-        <span class="sr-type">${label}</span>
-        <span class="sr-amt">${fmt(amt)}</span>
+    for (let i=1;i<=n;i++) {
+      const isF=i===1, amt=isF?firstAmt:remAmt;
+      rows+=`<div class="rs-row${isF?' first':''}"><span class="rn">${i}</span><span class="rt">${isF?'1st payment':'Payment '+i}</span><span class="ra">${fmt(amt)}</span></div>`;
+    }
+    return rows;
+  }
+
+  let timebarUsed = false; // only show custom plan if agent actively moved the timebar
+
+  /* ── Date helpers ── */
+  function getStartDate() {
+    const inp = E('startDateInput');
+    if (inp && inp.value) return new Date(inp.value + 'T00:00:00');
+    return new Date(); // today
+  }
+
+  function addPeriod(date, unit, n) {
+    const d = new Date(date);
+    if (unit === 'weekly') d.setDate(d.getDate() + 7 * n);
+    else d.setMonth(d.getMonth() + n);
+    return d;
+  }
+
+  function fmtDate(d) {
+    return d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+  }
+
+  function buildSchedRows(firstAmt, remAmt, n, unit, cls) {
+    const confirmDate = getStartDate();
+    // First payment is due 7 days after plan confirmation
+    const firstPayDate = new Date(confirmDate);
+    firstPayDate.setDate(firstPayDate.getDate() + 7);
+    let rows = '';
+    for (let i=1; i<=n; i++) {
+      const isF = i===1;
+      const amt = isF ? firstAmt : remAmt;
+      // Subsequent payments spaced weekly/monthly from the first payment date
+      const dueDate = i===1 ? firstPayDate : addPeriod(firstPayDate, unit, i - 1);
+      rows += `<div class="rs-row${isF?' first':''}">
+        <span class="rn">${i}</span>
+        <span class="rt">${isF ? '1st payment' : 'Payment '+i}</span>
+        <span class="rd">${fmtDate(dueDate)}</span>
+        <span class="ra">${fmt(amt)}</span>
       </div>`;
     }
-    return `<div class="sched-header"><span>Payment Schedule</span><span>${n} ${unit} payments</span></div>${rows}`;
+    return rows;
   }
 
-  function toggleProposal(uid, proposal) {
-    const btn = E(`btn-${uid}-${proposal}`);
-    const sch = E(`sch-${uid}-${proposal}`);
-    const otherProposal = proposal === 'p1' ? 'p2' : 'p1';
-    const otherBtn = E(`btn-${uid}-${otherProposal}`);
-    const otherSch = E(`sch-${uid}-${otherProposal}`);
+  /* Date picker HTML injected into output */
+  function renderDatePicker() {
+    const today = new Date().toISOString().split('T')[0];
+    const firstPayDisplay = new Date(); firstPayDisplay.setDate(firstPayDisplay.getDate() + 7);
+    return `<div class="date-picker-row">
+      <span class="date-picker-label">Plan confirmation date</span>
+      <div class="date-picker-options">
+        <span class="date-default-badge" id="defaultDateBadge">Today · ${fmtDate(new Date())}</span>
+        <span class="date-sep">or</span>
+        <input type="date" id="startDateInput" class="date-input" value="${today}" min="${today}" onchange="refreshDates()"/>
+        <span class="date-sep" style="margin-left:4px;">→</span>
+        <span style="font-size:11px;font-weight:600;color:var(--grey-5);">First payment due <strong id="firstPayLabel">${fmtDate(firstPayDisplay)}</strong></span>
+      </div>
+    </div>`;
+  }
 
-    const isOpen = sch.classList.contains('open');
-
-    // Close the other one
-    if (otherBtn && otherSch) {
-      otherBtn.classList.remove('selected');
-      otherSch.classList.remove('open');
+  function refreshDates() {
+    // Update the first payment label preview
+    const lbl = E('firstPayLabel');
+    if (lbl) {
+      const conf = getStartDate();
+      const fp = new Date(conf); fp.setDate(fp.getDate() + 7);
+      lbl.textContent = fmtDate(fp);
     }
-
-    // Toggle this one
-    btn.classList.toggle('selected', !isOpen);
-    sch.classList.toggle('open', !isOpen);
+    const v = recalcTotal();
+    if (v > 0) run();
   }
 
-  function renderSinglePlan(p, freq, cur) {
-    const str33 = p.amount * 0.33;
-    const tgt20 = p.amount * 0.20;
-    const remN  = Math.max(p.n - 1, 1);
-    const uid   = 'single';
+  function setActiveProposal(pid) {
+    const allCards = document.querySelectorAll('.rec-card');
+    allCards.forEach(c => {
+      c.classList.remove('active');
+      const det = c.querySelector('.rec-detail');
+      if (det) det.style.display = 'none';
+    });
+    const card = E('rec-'+pid);
+    if (!card) return;
+    card.classList.add('active');
+    const det = card.querySelector('.rec-detail');
+    if (det) det.style.display = 'block';
+  }
 
-    const rem33 = (p.amount - str33) / remN;
-    const rem20 = (p.amount - tgt20) / remN;
+  /* ── Main run ── */
+  function run() {
+    const v = recalcTotal(), cur = getCur(), minAmt = MIN_AMOUNTS[cur.code]||1000;
+    const errEl = E('amtErr');
+    if (!v || v < minAmt) {
+      errEl.textContent = !v||v<=0 ? 'Please enter at least one invoice amount.' : `Minimum total is ${cur.sym}${minAmt.toLocaleString()}. Current total: ${fmt(v)}.`;
+      errEl.className='input-error show'; return;
+    }
+    errEl.className='input-error';
+    const over5k = v > cur.threshold;
+    const al=E('alert');
+    if (over5k) { al.className='sf-alert show'; al.innerHTML=`⚠ <strong>Collections team involvement required</strong> · This plan total exceeds ${cur.sym}${cur.threshold.toLocaleString()}. Do not escalate — tag Collections team in the support case for approval.`; }
+    else { al.className='sf-alert'; }
 
-    const durLabel = p.durLabel || `${p.n} ${freq==='w'?'weeks':'months'}`;
-    const durSub   = p.durSub ? ` · ${p.durSub}` : '';
-    const excNote  = p.exc
-      ? `<span style="font-size:11px;color:var(--amber);font-weight:600;margin-left:8px;">Exception · justify before offering</span>` : '';
+    E('stats').style.display='block';
+    E('sTotal').textContent=fmt(v);
+    E('sCurLabel').textContent=`${cur.code} · incl. all late fees`;
+    E('sStr').textContent=fmt(v*0.33);
+    E('sTgt').textContent=fmt(v*0.20);
 
-    const apBadge = p.needsApproval
-      ? `<span class="apb req"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3.5v3M6 8v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>${p.approvalNote}</span>`
-      : `<span class="apb ok"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>None required</span>`;
+    const band = getBand(v);
+    const allPlans = freq==='m' ? buildMonthlyPlans(v,over5k,cur) : buildWeeklyPlans(v,over5k,cur);
+    const customPlan = allPlans.find(p=>p.n===selectedDur)||allPlans[0];
 
-    // Proposal 1 — 33%
-    const sched1 = p.n > 1 ? buildSchedule(uid, str33, rem33, p.n, p.unit, '1st proposal') : '';
-    const prop1  = `
-      <div class="proposal-btn p1" id="btn-${uid}-p1" onclick="toggleProposal('${uid}','p1')">
-        <div class="proposal-left">
-          <span class="proposal-label">1st Proposal</span>
-          <span class="proposal-amount">${fmt(str33)}</span>
-        </div>
-        <span class="proposal-pct">33% first payment · ${fmt(rem33)}/payment after</span>
-        <span class="proposal-toggle-icon">▼</span>
-      </div>
-      <div class="proposal-schedule" id="sch-${uid}-p1">${sched1}</div>`;
+    // Preserve start date input value across re-renders
+    const existingDate = E('startDateInput') ? E('startDateInput').value : null;
+    E('out').innerHTML = renderOutput(v, band, customPlan, over5k, cur);
+    if (existingDate && E('startDateInput')) E('startDateInput').value = existingDate;
+    openScheds = {};
+  }
 
-    // Proposal 2 — 20%
-    const sched2 = p.n > 1 ? buildSchedule(uid, tgt20, rem20, p.n, p.unit, '2nd proposal') : '';
-    const prop2  = `
-      <div class="proposal-btn p2" id="btn-${uid}-p2" onclick="toggleProposal('${uid}','p2')">
-        <div class="proposal-left">
-          <span class="proposal-label">2nd Proposal</span>
-          <span class="proposal-amount">${fmt(tgt20)}</span>
-        </div>
-        <span class="proposal-pct">20% first payment · ${fmt(rem20)}/payment after</span>
-        <span class="proposal-toggle-icon">▼</span>
-      </div>
-      <div class="proposal-schedule" id="sch-${uid}-p2">${sched2}</div>`;
+  function buildMonthlyPlans(v,over5k,cur) {
+    return [{n:1,label:'1 month',exc:false},{n:2,label:'2 months',exc:false},{n:3,label:'3 months',exc:false},{n:4,label:'4 months',exc:true},{n:5,label:'5 months',exc:true},{n:6,label:'6 months',exc:true}]
+      .map(o=>({durLabel:o.label,exc:o.exc,n:o.n,unit:'monthly',needsApproval:over5k||o.exc,
+        approvalNote:over5k&&o.exc?'Tag Collections team (amount + exception)':over5k?`Tag Collections team (over ${cur.sym}${cur.threshold.toLocaleString()})`:o.exc?'Tag Collections team (exception >3 mo)':null,amount:v}));
+  }
 
+  function buildWeeklyPlans(v,over5k,cur) {
+    return WEEKLY_OPTS.map(o=>({durLabel:o.label,exc:o.exc,n:o.n,unit:'weekly',needsApproval:over5k||o.exc,
+      approvalNote:over5k&&o.exc?'Tag Collections team (amount + exception)':over5k?`Tag Collections team (over ${cur.sym}${cur.threshold.toLocaleString()})`:o.exc?'Tag Collections team (exception >3 mo)':null,amount:v}));
+  }
+
+  function renderProposalCard(pid, pclass, title, spec, v, apBadge) {
+    const first = v * spec.pct;
+    const remN  = Math.max(spec.n - 1, 1);
+    const remEa = (v - first) / remN;
+    const rows  = spec.n > 1 ? buildSchedRows(first, remEa, spec.n, spec.unit, pclass)
+                             : (() => { const fp = new Date(getStartDate()); fp.setDate(fp.getDate()+7); return `<div class="rs-row first"><span class="rn">1</span><span class="rt">Full amount</span><span class="rd">${fmtDate(fp)}</span><span class="ra">${fmt(v)}</span></div>`; })();
+    const detailPanel = `
+      <div class="rec-detail" style="display:none;margin-top:14px;border-top:1px solid var(--grey-2);padding-top:14px;">
+        <div class="sched-col-header"><span class="sh-num">#</span><span class="sh-type">Payment</span><span class="sh-date">Due date</span><span class="sh-amt">Amount</span></div>
+        <div style="background:var(--grey-1);border-radius:6px;overflow:hidden;">${rows}</div>
+        <div style="margin-top:10px;font-size:11px;color:var(--grey-5);">First payment within <strong>7 days</strong> of plan confirmation</div>
+      </div>`;
     return `
-      <div class="sec-head">
-        <h2>${durLabel}${durSub} · ${p.n} payment${p.n>1?'s':''}</h2>
-        ${excNote}
-        <div style="margin-left:auto;">${apBadge}</div>
-      </div>
-      <div class="tbl-wrap">
-        <div style="padding:20px 20px 16px;">
-          <div class="proposal-cell">${prop1}${prop2}</div>
+      <div class="rec-card ${pclass}" id="rec-${pid}" onclick="setActiveProposal('${pid}')">
+        <div class="rec-check">✓</div>
+        <div class="rec-badge">${title}</div>
+        <div class="rec-first-pay">${fmt(first)}</div>
+        <div class="rec-pct">${(spec.pct*100).toFixed(0)}% first payment</div>
+        <div class="rec-meta">
+          <div class="rec-meta-row"><span class="rk">Frequency</span><span class="rv">${spec.freq}</span></div>
+          <div class="rec-meta-row"><span class="rk">Duration</span><span class="rv">${spec.label}</span></div>
+          <div class="rec-meta-row"><span class="rk">Remaining</span><span class="rv">${fmt(remEa)} × ${remN}</span></div>
         </div>
-        <div class="legend">
-          <div class="leg-item"><div class="leg-sw" style="background:var(--green-bg);border-color:var(--green-mid)"></div>1st Proposal (33%) · preferred starting point</div>
-          <div class="leg-item"><div class="leg-sw" style="background:var(--blue-bg);border-color:var(--blue-mid)"></div>2nd Proposal (20%) · if buyer needs more flexibility</div>
-          <div class="leg-item"><div class="leg-sw" style="background:var(--danger-bg);border-color:#F5C5C5"></div>Red badge · tag Collections team in the support case, do not escalate</div>
-        </div>
-      </div>
-      <p class="footer-note">Click a proposal to expand the full payment schedule · Always include all late fees · First payment within <strong>7 days</strong></p>`;
+        ${apBadge ? `<div style="margin-top:10px;">${apBadge}</div>` : ''}
+        <div class="rec-select-hint">Click to view full plan</div>
+        ${detailPanel}
+      </div>`;
   }
+
+  function renderOutput(v, band, customPlan, over5k, cur) {
+    const apBadge = over5k
+      ? `<span class="apb req"><svg width="9" height="9" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3.5v3M6 8v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Tag Collections team in support case</span>`
+      : '';
+
+    const datePicker = renderDatePicker();
+
+    if (band) {
+      const c1 = renderProposalCard('p1','p1','1st Proposal', band.p1, v, apBadge);
+      const c2 = renderProposalCard('p2','p2','2nd Proposal', band.p2, v, apBadge);
+      const c3 = renderProposalCard('p3','p3','3rd Proposal', band.p3, v, apBadge);
+
+      const customSection = timebarUsed ? (() => {
+        const excNote = customPlan.exc ? `<span class="sec-note">Exception · justify before offering</span>` : '';
+        const apBadgeSec = customPlan.needsApproval
+          ? `<span class="apb req" style="margin-left:auto"><svg width="9" height="9" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3.5v3M6 8v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>${customPlan.approvalNote}</span>`
+          : `<span class="apb ok" style="margin-left:auto"><svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>None required</span>`;
+        return `<div class="sec-head" style="margin-top:24px;"><h2>Custom plan · ${customPlan.durLabel} · ${customPlan.n} payment${customPlan.n>1?'s':''}</h2>${excNote}${apBadgeSec}</div>${renderCustomPlan(customPlan, v)}`;
+      })() : '';
+
+      return `
+        ${datePicker}
+        <div class="rec-panel">
+          <div class="rec-header"><div><div class="rec-title">Recommended proposals</div><div class="rec-subtitle">Based on invoice total ${fmt(v)}</div></div></div>
+          <div class="rec-grid">${c1}${c2}${c3}</div>
+        </div>
+        ${customSection}
+        <p class="footer-note">Click a proposal to select it and view the full payment schedule · First payment within <strong>7 days of plan confirmation</strong></p>`;
+
+    } else {
+      const excNote = customPlan.exc ? `<span class="sec-note">Exception · justify before offering</span>` : '';
+      const apBadgeSec = customPlan.needsApproval
+        ? `<span class="apb req" style="margin-left:auto"><svg width="9" height="9" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3.5v3M6 8v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>${customPlan.approvalNote}</span>`
+        : `<span class="apb ok" style="margin-left:auto"><svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>None required</span>`;
+      return `
+        ${datePicker}
+        <div class="sec-head"><h2>${customPlan.durLabel} · ${customPlan.n} payment${customPlan.n>1?'s':''}</h2>${excNote}${apBadgeSec}</div>
+        ${renderCustomPlan(customPlan, v)}
+        <p class="footer-note">Click a proposal to select it and view the full payment schedule · First payment within <strong>7 days of plan confirmation</strong></p>`;
+    }
+  }
+
+  function renderCustomPlan(p, v) {
+    const str33=v*0.33, tgt20=v*0.20, remN=Math.max(p.n-1,1);
+    const rem33=(v-str33)/remN, rem20=(v-tgt20)/remN;
+    const s1=buildSchedRows(str33,rem33,p.n,p.unit,'p1');
+    const s2=buildSchedRows(tgt20,rem20,p.n,p.unit,'p2');
+    const colHdr = `<div class="sched-col-header"><span class="sh-num">#</span><span class="sh-type">Payment</span><span class="sh-date">Due date</span><span class="sh-amt">Amount</span></div>`;
+    const makeDetail = (rows) => `
+      <div class="rec-detail" style="display:none;margin-top:14px;border-top:1px solid var(--grey-2);padding-top:14px;">
+        ${colHdr}
+        <div style="background:var(--grey-1);border-radius:6px;overflow:hidden;">${rows}</div>
+        <div style="margin-top:10px;font-size:11px;color:var(--grey-5);">First payment within <strong>7 days</strong> of plan confirmation</div>
+      </div>`;
+    return `
+      <div class="card" style="overflow:hidden;margin-bottom:4px;">
+        <div style="padding:16px 18px;display:flex;flex-direction:column;gap:8px;">
+          <div class="rec-card p1" id="rec-custom-p1" onclick="setActiveProposal('custom-p1')" style="box-shadow:none;">
+            <div class="rec-check">✓</div><div class="rec-badge">1st Proposal</div>
+            <div class="rec-first-pay">${fmt(str33)}</div>
+            <div class="rec-pct">33% first payment · ${fmt(rem33)} / payment remaining</div>
+            <div class="rec-select-hint">Click to view full plan</div>
+            ${makeDetail(s1)}
+          </div>
+          <div class="rec-card p2" id="rec-custom-p2" onclick="setActiveProposal('custom-p2')" style="box-shadow:none;">
+            <div class="rec-check">✓</div><div class="rec-badge">2nd Proposal</div>
+            <div class="rec-first-pay">${fmt(tgt20)}</div>
+            <div class="rec-pct">20% first payment · ${fmt(rem20)} / payment remaining</div>
+            <div class="rec-select-hint">Click to view full plan</div>
+            ${makeDetail(s2)}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  /* Init */
+  E('invoiceLines').appendChild(makeLine('GBP'));
+  selectedDur = 4;
+  buildDurToggle();
+  initTimebarEvents();
 </script>
 </body>
 </html>
