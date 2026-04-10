@@ -252,6 +252,31 @@
   .tc-list li::before { content: '·'; position: absolute; left: 0; color: #98989D; font-weight: 700; }
   .inv-preview { /* populated dynamically on card open */ }
 
+
+  /* CUSTOM PLAN CARD */
+  .custom-card { background: var(--card); border-radius: var(--rc); padding: 20px 20px 18px; border: 1.5px dashed var(--sep); margin-top: 10px; }
+  .custom-card-title { font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; margin-bottom: 4px; }
+  .custom-card-sub { font-size: 13px; color: var(--ink4); margin-bottom: 16px; }
+  .custom-controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .custom-field { display: flex; flex-direction: column; gap: 5px; }
+  .custom-field label { font-size: 11px; font-weight: 600; color: var(--ink4); text-transform: uppercase; letter-spacing: 0.05em; }
+  .custom-field select, .custom-field input[type=number] {
+    font-size: 14px; font-weight: 500; font-family: var(--font); color: var(--ink);
+    background: var(--inset); border: none; border-radius: var(--ri); padding: 10px 12px;
+    outline: none; width: 100%; appearance: none; -webkit-appearance: none; cursor: pointer;
+  }
+  .custom-field select { background-image: url("data:image/svg+xml,%3Csvg width='8' height='5' viewBox='0 0 8 5' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%2398989D' stroke-width='1.3' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+  .custom-field input[type=number]:focus, .custom-field select:focus { box-shadow: 0 0 0 3px var(--blue-ring); }
+  .custom-preview { background: var(--inset); border-radius: var(--ri); padding: 12px 14px; margin-bottom: 14px; display: none; }
+  .custom-preview.show { display: block; }
+  .custom-preview-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+  .custom-preview-row:last-child { margin-bottom: 0; }
+  .custom-preview-row .cpk { color: var(--ink3); }
+  .custom-preview-row .cpv { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .custom-preview-row .cpv.green { color: var(--green); }
+  .custom-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; font-family: var(--font); background: var(--ink); color: white; border: none; border-radius: var(--ri); padding: 10px 18px; cursor: pointer; transition: opacity .15s; }
+  .custom-btn:hover { opacity: 0.82; }
+
   @media (max-width: 680px) {
     .stats { grid-template-columns: 1fr 1fr; }
     .props-grid { grid-template-columns: 1fr; }
@@ -305,6 +330,57 @@
       <p>Enter invoice amounts above to see recommended payment plan proposals.</p>
     </div>
   </div>
+
+
+  <!-- CUSTOM PLAN -->
+  <div id="customPlanSection" style="display:none">
+    <div class="custom-card">
+      <div class="custom-card-title">Custom plan</div>
+      <div class="custom-card-sub">Set your own first payment percentage, frequency, and duration.</div>
+      <div class="custom-controls">
+        <div class="custom-field">
+          <label>First payment %</label>
+          <input type="number" id="cPct" min="15" max="50" step="1" value="33" oninput="updateCustomPreview()"/>
+        </div>
+        <div class="custom-field">
+          <label>Frequency</label>
+          <select id="cFreq" onchange="updateCustomPreview()">
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </div>
+        <div class="custom-field">
+          <label>Duration</label>
+          <select id="cDur" onchange="updateCustomPreview()">
+            <option value="4">4 weeks</option>
+            <option value="5">5 weeks</option>
+            <option value="6">6 weeks</option>
+            <option value="7">7 weeks</option>
+            <option value="8">8 weeks</option>
+            <option value="9">9 weeks</option>
+            <option value="10">10 weeks</option>
+            <option value="11">11 weeks</option>
+            <option value="12">12 weeks</option>
+            <option value="13">13 weeks</option>
+            <option value="18" data-exc="1">18 weeks ⚠</option>
+            <option value="22" data-exc="1">22 weeks ⚠</option>
+            <option value="26" data-exc="1">26 weeks ⚠</option>
+          </select>
+        </div>
+      </div>
+      <div class="custom-preview" id="customPreview">
+        <div class="custom-preview-row"><span class="cpk">First payment</span><span class="cpv green" id="cpFirst">—</span></div>
+        <div class="custom-preview-row"><span class="cpk">Remaining payments</span><span class="cpv" id="cpRem">—</span></div>
+        <div class="custom-preview-row"><span class="cpk">Total payments</span><span class="cpv" id="cpN">—</span></div>
+      </div>
+      <div id="customExcNote" style="display:none;font-size:12px;color:var(--amber);font-weight:500;margin-bottom:12px;">⚠ Exception plan — tag Collections team before offering</div>
+      <button class="custom-btn" onclick="generateCustomPlan()">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Generate plan
+      </button>
+    </div>
+  </div>
+  <div id="customCardOut"></div>
 
   <!-- RULES -->
   <div class="rules-panel">
@@ -433,7 +509,7 @@
   /* ── Schedule rows ── */
   function buildRows(pid, firstAmt, remAmt, n, unit){
     const conf=getConfDate(pid);
-    const acceptDeadline=addDays(conf,3);
+    const acceptDeadline=addWorkingDays(conf,3);
     const firstPay=addDays(acceptDeadline,7); // 7 days after acceptance = 10 days after confirmation
     let rows='';
     for(let i=1;i<=n;i++){
@@ -448,7 +524,7 @@
   function renderConfBlock(pid){
     const today=new Date().toISOString().split('T')[0];
     const conf=new Date();
-    const accept=addDays(conf,3);
+    const accept=addWorkingDays(conf,3);
     const firstPay=addDays(accept,7);
     return `<div class="conf-date-row">
       <span class="conf-date-label">Payment Plan Confirmation Date</span>
@@ -491,7 +567,7 @@
   }
   function refreshCard(pid){
     const conf=getConfDate(pid);
-    const accept=addDays(conf,3);
+    const accept=addWorkingDays(conf,3);
     const fp=addDays(accept,7);
     const aEl=E('accept-'+pid), fEl=E('fpay-'+pid);
     if(aEl) aEl.textContent=fmtDate(accept);
@@ -629,7 +705,7 @@
     const invLines = getInvoiceLines();
     const card = E('pcard-'+pid);
     const conf = getConfDate(pid);
-    const accept = addDays(conf, 3);
+    const accept = addWorkingDays(conf, 3);
     const fp = addDays(accept, 7);
     const validUntil = addWorkingDays(conf, 3);
     const first = parseFloat(card.dataset.first);
@@ -838,7 +914,8 @@
           <span class="props-sub">Based on ${fmt(v)}</span>
         </div>
         <div class="props-grid" id="props-grid">${c1}${c2}${c3}</div>
-        <p style="font-size:12px;color:var(--ink4);text-align:center;margin-top:12px;">Click a proposal to view the full payment schedule and set a confirmation date</p>`;
+        <p style="font-size:12px;color:var(--ink4);text-align:center;margin-top:12px;">Click a proposal to view the full payment schedule and set a confirmation date</p>
+        <div style="text-align:center;margin-top:10px;"><button onclick="showCustomPlan()" style="font-size:13px;font-weight:500;font-family:var(--font);color:var(--blue);background:none;border:none;cursor:pointer;padding:6px 0;">+ Create custom plan</button></div>`;
     } else {
       // Out of band — show basic 33/20 cards
       const s33={pct:0.33,freq:'Weekly',n:8,unit:'weekly',label:'8 weeks'};
@@ -851,7 +928,72 @@
           <span class="props-sub">Based on ${fmt(v)}</span>
         </div>
         <div class="props-grid" id="props-grid">${c1}${c2}</div>
-        <p style="font-size:12px;color:var(--ink4);text-align:center;margin-top:12px;">Click a proposal to view the full payment schedule and set a confirmation date</p>`;
+        <p style="font-size:12px;color:var(--ink4);text-align:center;margin-top:12px;">Click a proposal to view the full payment schedule and set a confirmation date</p>
+        <div style="text-align:center;margin-top:10px;"><button onclick="showCustomPlan()" style="font-size:13px;font-weight:500;font-family:var(--font);color:var(--blue);background:none;border:none;cursor:pointer;padding:6px 0;">+ Create custom plan</button></div>`;
+    }
+  }
+
+
+  /* ── Custom plan ── */
+  function updateCustomFreqOptions(){
+    const freq = E('cFreq').value;
+    const dur = E('cDur');
+    const curVal = dur.value;
+    if(freq === 'weekly'){
+      dur.innerHTML = [4,5,6,7,8,9,10,11,12,13].map(n=>`<option value="${n}">${n} weeks</option>`).join('')
+        + [18,22,26].map(n=>`<option value="${n}" data-exc="1">${n} weeks ⚠</option>`).join('');
+    } else {
+      dur.innerHTML = [1,2,3].map(n=>`<option value="${n}">${n} month${n>1?'s':''}</option>`).join('')
+        + [4,5,6].map(n=>`<option value="${n}" data-exc="1">${n} months ⚠</option>`).join('');
+    }
+    // Try restore
+    const opt = dur.querySelector(`option[value="${curVal}"]`);
+    if(opt) dur.value = curVal;
+    updateCustomPreview();
+  }
+
+  E('cFreq').addEventListener('change', updateCustomFreqOptions);
+
+  function updateCustomPreview(){
+    const v = recalcTotal();
+    if(!v || v <= 0){ E('customPreview').classList.remove('show'); return; }
+    const pct = Math.max(15, Math.min(50, parseFloat(E('cPct').value)||33)) / 100;
+    const n = parseInt(E('cDur').value) || 4;
+    const first = v * pct;
+    const remN = Math.max(n-1, 1);
+    const remEa = (v - first) / remN;
+    E('cpFirst').textContent = fmt(first);
+    E('cpRem').textContent = `${fmt(remEa)} × ${remN}`;
+    E('cpN').textContent = n + ' ' + (E('cFreq').value === 'weekly' ? 'week' : 'month') + (n>1?'s':'');
+    E('customPreview').classList.add('show');
+    // Exception check
+    const isExc = E('cDur').querySelector('option:checked')?.dataset.exc === '1';
+    E('customExcNote').style.display = isExc ? 'block' : 'none';
+  }
+
+  function generateCustomPlan(){
+    const v = recalcTotal();
+    if(!v || v <= 0) return;
+    const cur = getCur();
+    const over5k = v > cur.threshold;
+    const pct = Math.max(15, Math.min(50, parseFloat(E('cPct').value)||33)) / 100;
+    const n = parseInt(E('cDur').value) || 4;
+    const freq = E('cFreq').value;
+    const freqLabel = freq === 'weekly' ? 'Weekly' : 'Monthly';
+    const label = n + ' ' + (freq === 'weekly' ? 'week' : 'month') + (n>1?'s':'');
+    const spec = { pct, freq: freqLabel, n, unit: freq, label };
+    const apBadge = over5k ? `<span class="apb req"><svg width="9" height="9" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3.5v3M6 8v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Tag Collections team in support case</span>` : '';
+    const card = renderCard('custom','p1','Custom Plan',spec,v,apBadge);
+    E('customCardOut').innerHTML = card;
+    E('customCardOut').scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  function showCustomPlan(){
+    const sec = E('customPlanSection');
+    sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+    if(sec.style.display === 'block'){
+      updateCustomPreview();
+      sec.scrollIntoView({behavior:'smooth', block:'nearest'});
     }
   }
 
