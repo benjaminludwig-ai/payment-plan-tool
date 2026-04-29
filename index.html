@@ -253,7 +253,23 @@
   .inv-preview { /* populated dynamically on card open */ }
 
 
-  /* CUSTOM PLAN CARD */
+  /* Mode selector cards */
+  .mode-card {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+    padding: 14px 16px; border-radius: var(--ri); cursor: pointer;
+    border: 2px solid var(--sep); background: var(--inset);
+    text-align: left; font-family: var(--font); transition: all .15s;
+  }
+  .mode-card:hover { background: var(--card); border-color: var(--ink4); }
+  .mode-card-icon { font-size: 18px; font-weight: 700; color: var(--ink4); line-height: 1; margin-bottom: 2px; }
+  .mode-card-label { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .mode-card-desc { font-size: 11px; color: var(--ink4); font-weight: 400; }
+  .mode-card-pct.active { background: var(--green-bg); border-color: var(--green); }
+  .mode-card-pct.active .mode-card-icon { color: var(--green); }
+  .mode-card-pct.active .mode-card-label { color: var(--green); }
+  .mode-card-amt.active { background: var(--blue-bg); border-color: var(--blue); }
+  .mode-card-amt.active .mode-card-icon { color: var(--blue); }
+  .mode-card-amt.active .mode-card-label { color: var(--blue); }
   .custom-card { background: var(--card); border-radius: var(--rc); padding: 20px 20px 18px; border: 1.5px dashed var(--sep); margin-top: 10px; }
   .custom-card-title { font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; margin-bottom: 4px; }
   .custom-card-sub { font-size: 13px; color: var(--ink4); margin-bottom: 16px; }
@@ -336,19 +352,42 @@
   <div id="customPlanSection" style="display:none">
     <div class="custom-card">
       <div class="custom-card-title">Custom plan</div>
-      <div class="custom-card-sub">Set your own first payment percentage, frequency, and duration.</div>
-      <div class="custom-controls">
-        <div class="custom-field">
-          <label>First payment %</label>
-          <input type="number" id="cPct" min="15" max="50" step="1" value="33" oninput="updateCustomPreview()"/>
+      <div class="custom-card-sub" style="margin-bottom:16px;">Use when the buyer has requested a specific first payment amount or percentage.</div>
+
+      <!-- Mode selector — distinct cards -->
+      <div style="margin-bottom:18px;">
+        <span style="font-size:11px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:8px;">Buyer requests first payment by</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button id="modePctBtn" onclick="setFirstPayMode('pct')" class="mode-card mode-card-pct active">
+            <span class="mode-card-icon">%</span>
+            <span class="mode-card-label">Percentage</span>
+            <span class="mode-card-desc">e.g. "I can pay 25% upfront"</span>
+          </button>
+          <button id="modeAmtBtn" onclick="setFirstPayMode('amt')" class="mode-card mode-card-amt">
+            <span class="mode-card-icon">£</span>
+            <span class="mode-card-label">Amount</span>
+            <span class="mode-card-desc">e.g. "I can pay £500 now"</span>
+          </button>
         </div>
+      </div>
+
+      <div class="custom-controls" style="grid-template-columns:1fr 1fr 1fr;">
+
+        <!-- First payment input — swaps between % and amount -->
+        <div class="custom-field" id="cFirstField">
+          <label id="cFirstLabel">First payment %</label>
+          <input type="number" id="cPct" min="15" max="100" step="1" value="33" oninput="onCPctChange()" placeholder="e.g. 33"/>
+          <input type="number" id="cAmt" min="0" step="0.01" placeholder="e.g. 500" oninput="onCAmtChange()" style="display:none;"/>
+        </div>
+
         <div class="custom-field">
           <label>Frequency</label>
-          <select id="cFreq" onchange="updateCustomPreview()">
+          <select id="cFreq" onchange="updateCustomFreqOptions()">
             <option value="weekly">Weekly</option>
             <option value="monthly">Monthly</option>
           </select>
         </div>
+
         <div class="custom-field">
           <label>Duration</label>
           <select id="cDur" onchange="updateCustomPreview()">
@@ -367,7 +406,9 @@
             <option value="26" data-exc="1">26 weeks ⚠</option>
           </select>
         </div>
+
       </div>
+
       <div class="custom-preview" id="customPreview">
         <div class="custom-preview-row"><span class="cpk">First payment</span><span class="cpv green" id="cpFirst">—</span></div>
         <div class="custom-preview-row"><span class="cpk">Remaining payments</span><span class="cpv" id="cpRem">—</span></div>
@@ -406,7 +447,7 @@
 
   const CURRENCIES = {
     EUR:{sym:'€',code:'EUR',locale:'en-IE',threshold:5000},
-    GBP:{sym:'£',code:'GBP',locale:'en-GB',threshold:4300},
+    GBP:{sym:'£',code:'GBP',locale:'en-GB',threshold:5000},
     SEK:{sym:'kr',code:'SEK',locale:'sv-SE',threshold:55000},
     NOK:{sym:'kr',code:'NOK',locale:'nb-NO',threshold:55000},
     PLN:{sym:'zł',code:'PLN',locale:'pl-PL',threshold:22000},
@@ -954,19 +995,61 @@
 
   E('cFreq').addEventListener('change', updateCustomFreqOptions);
 
+  let firstPayMode = 'pct'; // 'pct' or 'amt'
+
+  function setFirstPayMode(mode){
+    firstPayMode = mode;
+    const pctBtn = E('modePctBtn'), amtBtn = E('modeAmtBtn');
+    const pctInp = E('cPct'), amtInp = E('cAmt');
+    const lbl = E('cFirstLabel');
+    if(mode === 'pct'){
+      pctBtn.classList.add('active'); amtBtn.classList.remove('active');
+      pctInp.style.display = ''; amtInp.style.display = 'none';
+      lbl.textContent = 'First payment %';
+      pctInp.focus();
+    } else {
+      amtBtn.classList.add('active'); pctBtn.classList.remove('active');
+      amtInp.style.display = ''; pctInp.style.display = 'none';
+      lbl.textContent = 'First payment amount';
+      const v = recalcTotal();
+      if(v > 0 && !amtInp.value){
+        amtInp.value = (v * (parseFloat(pctInp.value)||33) / 100).toFixed(2);
+      }
+      amtInp.focus();
+    }
+    updateCustomPreview();
+  }
+
+  function onCPctChange(){
+    updateCustomPreview();
+  }
+
+  function onCAmtChange(){
+    updateCustomPreview();
+  }
+
+  function getCustomFirst(){
+    const v = recalcTotal();
+    if(firstPayMode === 'amt'){
+      const amt = parseFloat(E('cAmt').value);
+      return (amt > 0) ? Math.min(amt, v) : v * 0.33;
+    } else {
+      const pct = Math.max(15, Math.min(100, parseFloat(E('cPct').value)||33)) / 100;
+      return v * pct;
+    }
+  }
+
   function updateCustomPreview(){
     const v = recalcTotal();
     if(!v || v <= 0){ E('customPreview').classList.remove('show'); return; }
-    const pct = Math.max(15, Math.min(50, parseFloat(E('cPct').value)||33)) / 100;
+    const first = getCustomFirst();
     const n = parseInt(E('cDur').value) || 4;
-    const first = v * pct;
     const remN = Math.max(n-1, 1);
-    const remEa = (v - first) / remN;
+    const remEa = Math.max(0, (v - first)) / remN;
     E('cpFirst').textContent = fmt(first);
     E('cpRem').textContent = `${fmt(remEa)} × ${remN}`;
     E('cpN').textContent = n + ' ' + (E('cFreq').value === 'weekly' ? 'week' : 'month') + (n>1?'s':'');
     E('customPreview').classList.add('show');
-    // Exception check
     const isExc = E('cDur').querySelector('option:checked')?.dataset.exc === '1';
     E('customExcNote').style.display = isExc ? 'block' : 'none';
   }
@@ -976,7 +1059,8 @@
     if(!v || v <= 0) return;
     const cur = getCur();
     const over5k = v > cur.threshold;
-    const pct = Math.max(15, Math.min(50, parseFloat(E('cPct').value)||33)) / 100;
+    const first = getCustomFirst();
+    const pct = first / v; // effective pct for renderCard
     const n = parseInt(E('cDur').value) || 4;
     const freq = E('cFreq').value;
     const freqLabel = freq === 'weekly' ? 'Weekly' : 'Monthly';
@@ -992,6 +1076,7 @@
     const sec = E('customPlanSection');
     sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
     if(sec.style.display === 'block'){
+      setFirstPayMode('pct');
       updateCustomPreview();
       sec.scrollIntoView({behavior:'smooth', block:'nearest'});
     }
